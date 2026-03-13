@@ -32,3 +32,16 @@ All functions sending or receiving data, website to email scanner etc., should b
   }
 }
 ```
+
+
+Readeble code over effecient code. Eg. for loops should rather be 3-5 lines instead of 1 line to inprove readability.
+
+
+Comment where necessary. Code that does not immedialy explain itself should be commented. This is very much a subjective opinion but try.
+
+
+Variables names - camelCase
+    Longer explainable variable names rather than short ones. Eg. "PassWord" instead of "passwrd"
+Functions names - camelCase
+Class names - PascalCase
+Constants names - ALL_CAPS_WITH_UNDERSCORES
