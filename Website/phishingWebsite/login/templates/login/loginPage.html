@@ -21,3 +21,77 @@
 	</form>
 </body>
 </html>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>   
+<script>
+
+	    function sanitize(string) {
+            /*
+            Sanitizes the input for javaScript
+            */
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                "/": '&#x2F;',
+            };
+            const reg = /[&<>"'/]/ig;
+            return string.replace(reg, (match)=>(map[match]));
+        }
+
+
+		// Function for logging in.
+        async function submitLogin() {
+            // Get the values, entered by the user. 
+            
+            try {
+                const email = sanitize(document.getElementById('username').value);
+                const password = sanitize(document.getElementById('password').value);
+            
+                if (!email || !password) {
+                    alert("All fields are required.");
+                    return;
+                }
+            
+                // Hash the password, using SHA512. This is compared to the already stored version of the hashed password, 
+                // which was appended when the user created the account, in the backend.
+                hashedPassword = await CryptoJS.SHA512(password);
+                
+                //Send the data to the backend to be compared
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('password', hashedPassword);   
+
+                fetch('/login', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        // Follow the redirect to the login page
+                        window.location.href = response.url;
+						        window.location.href = "{% url 'dashboard:goToLeaderboard' %}";
+
+                    } else if (!response.ok) {
+                        // Handle errors (e.g., invalid 2FA code)
+                        return response.text().then(text => {
+                            alert(`Error : ${text}`);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating user:', error);
+                    alert('An error occurred while creating the user. Please try again.');
+                });
+
+
+
+            } catch (error) {
+                alert("An unexpected error occurred. Please try again.");
+            }
+        }
+    </script>
+    </div>
+</body>
+</html>
