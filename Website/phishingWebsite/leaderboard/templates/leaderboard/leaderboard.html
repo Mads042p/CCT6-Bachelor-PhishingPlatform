@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Website Leaderboard</title>
+</head>
+<body>
+    <h1>Welcome to the Phishing Website Dashboard</h1>
+		<button onclick="goToDashboard()">Leaderboard</button>
+</body>
+
+<script>
+    function goToDashboard() {
+        window.location.href = "{% url 'leaderboard:goToDashboard' %}";
+    }
+</script>
