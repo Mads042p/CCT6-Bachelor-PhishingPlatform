@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
-from sqlmanager import *
 
 class CustomUser(models.Model):
     email = models.CharField(max_length=150, unique=True)

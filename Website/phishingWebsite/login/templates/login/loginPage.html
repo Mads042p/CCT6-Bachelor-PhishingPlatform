@@ -11,8 +11,8 @@
 	<form method="post">
 		{% csrf_token %}
 
-		<label for="username">Username</label>
-		<input type="text" id="username" name="username" required>
+		<label for="email">Email</label>
+		<input type="email" id="email" name="email" required>
 
 		<label for="password">Password</label>
 		<input type="password" id="password" name="password" required>
@@ -46,7 +46,7 @@
             // Get the values, entered by the user. 
             
             try {
-                const email = sanitize(document.getElementById('username').value);
+                const email = sanitize(document.getElementById('email').value);
                 const password = sanitize(document.getElementById('password').value);
             
                 if (!email || !password) {
@@ -63,11 +63,12 @@
                 formData.append('email', email);
                 formData.append('password', hashedPassword);   
 
-                fetch('/login', {
+                fetch('/index', {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => {
+                    console.log(response);
                     if (response.redirected) {
                         // Follow the redirect to the login page
                         window.location.href = response.url;
