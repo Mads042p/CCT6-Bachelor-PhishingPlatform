@@ -6,6 +6,9 @@ from django.http import HttpResponse
 def dashboard(request):
     return render(request, 'dashboard/dashboard.html')
 
+def goToDashboard(request):
+    return redirect('dashboard:dashboard')
+
 def goToAdminDashboard(request):
     return redirect('adminDashboard:adminDashboard')
 

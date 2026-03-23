@@ -5,6 +5,7 @@ app_name = "dashboard"
 
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
+    path('goToDashboard/', views.goToDashboard, name='goToDashboard'),
     path("goToLeaderboard/", views.goToLeaderboard, name="goToLeaderboard"),
     path("goToModules/", views.goToModules, name="goToModules"),
     path("goToAchievements/", views.goToAchievements, name="goToAchievements"),
