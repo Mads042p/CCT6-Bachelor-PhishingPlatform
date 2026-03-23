@@ -1,9 +1,48 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.http import HttpResponse
+from sqlmanager.views import *
 
 def achievements(request):
-    return render(request, 'achievements/achievements.html')
+    # Hard-coded user
+    UserID = 5
+
+    # All Achievements
+    rows = GetData("Achievements")
+    achievements = []
+
+    for row in rows:
+        achievement = {
+            "id": row[0],
+            "name": row[1],
+            "description": row[2],
+            "completed": False
+        }
+        achievements.append(achievement)
+
+    # User's Achievements
+    rows = getUserAchievements(UserID)
+    userAchievements = []
+
+    for row in rows:
+        userAchievement = {
+            "id": row[0],
+            "name": row[1],
+            "description": row[2]
+        }
+        userAchievements.append(userAchievement)
+
+    completedAchievements = []
+    for row in rows:
+        completedAchievements.append(row[0])
+    
+    for achievement in achievements:
+        if achievement["id"] in completedAchievements:
+            achievement["completed"] = True
+    
+    print(achievements)
+
+    return render(request, 'achievements/achievements.html', {"achievements": achievements})
 
 def goToDashboard(request):
     return redirect('dashboard:dashboard')

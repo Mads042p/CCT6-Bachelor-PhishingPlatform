@@ -55,10 +55,18 @@
     <div class="app-body">
         <div></div>
         <div>
-            <h1>Achievements</h1>
-            <h3>Rank: Silver Elite Master</h3>
-            <h3>Accuracy: 85%</h3>
-        </div>
+    		<h1>Achievements</h1>
+    		<ul id="achievement-list">
+        		{% for achievement in achievements %}
+            		<li class="{% if achievement.completed == False or achievement.completed == 'False' %}not-completed{% endif %}">
+                		<strong>{{ achievement.name }}</strong><br>
+                		<span>{{ achievement.description }}</span>
+            		</li>
+        		{% empty %}
+            		<li>No achievements found.</li>
+        		{% endfor %}
+    		</ul>
+		</div>
         <div></div>
     </div>
 </div>
