@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Creation</title>
+</head>
+<div class="company-creation-container">
+        <h2><em>Company Creation</em></h2>
+        <form id="companyCreationForm">
+            {% csrf_token %}
+
+            <label for="companyName"><em>Company Name</em></label>
+            <input type="text" id="companyName" name="companyName" required>
+
+            <label for="CVRnr"><em>CVR Number</em></label>
+            <input type="text" id="CVRnr" name="CVRnr" required>
+            
+            <label for="adminEmail"><em>Admin Email</em></label>
+            <input type="email" id="adminEmail" name="adminEmail" required>
+
+
+            <button type="button" onclick="createCompany()"><em>Create Company</em></button>
+            <br>
+            <!-- Skift /signup til det rigtige link -->
+            <br>
+                <a href="{% url 'signup:signup' %}"><em>Back</em></a>
+</html>
+
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+
+
+        function sanitize(string) {
+            /*
+            Sanitizes the input for javaScript
+            */
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                "/": '&#x2F;',
+            };
+            const reg = /[&<>"'/]/ig;
+            return string.replace(reg, (match)=>(map[match]));
+          }
+
+</script>

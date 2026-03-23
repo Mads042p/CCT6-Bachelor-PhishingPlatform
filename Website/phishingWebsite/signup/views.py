@@ -30,3 +30,7 @@ def goToDashboard(request):
     
         return redirect('dashboard:dashboard')
     return render(request, 'login/loginPage.html')
+
+
+def companyCreation(request):
+    return render(request, 'signup/companyCreation.html')

@@ -19,15 +19,22 @@
             <label for="password"><em>Password</em></label>
             <input type="password" id="password" name="password" required>
 
-            <lable for="company"><em>Company</em></lable>
-            <input type="text" id="company" name="company" required>
+            <lable for="company"><em>Company code</em></lable>
+            <input type="text" id="company" name="company">
 
             <lable for="isAdmin"><em>Is Admin?</em></lable>
             <input type="checkbox" id="isAdmin" name="isAdmin">
             
-            <button type="button" onclick="createUser()"><em>LOGIN</em></button>
+            <button type="button" onclick="createUser()"><em>login</em></button>
             <br>
             <!-- Skift /signup til det rigtige link -->
+            <br>
+                <a href="{% url 'signup:companyCreation' %}"><em>Don't have a company account? Sign up here.</em></a>
+            
+                    
+        
+
+
         </form>
     </div>
 
