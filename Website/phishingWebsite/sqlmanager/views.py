@@ -20,8 +20,9 @@ def GetData(tableName):
     conn, cursor = cursorConnect()
     query = f"SELECT * FROM {tableName}"
     cursor.execute(query)
+    result = cursor.fetchall()
     conn.close()
-    return cursor.fetchall()
+    return result
 
 def DeleteData(tableName, email):
     conn, cursor = cursorConnect()
@@ -42,3 +43,17 @@ def getHashedPassword(tableName, email):
 
     return x 
     
+def getUserAchievements(UserID):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""SELECT *
+                FROM Achievements A
+                INNER JOIN UserAchievements UA
+                ON A.AchievementID = UA.AchievementID
+                WHERE UserID = ?"""
+    cursor.execute(query, (UserID,))
+    conn.commit()
+    result = cursor.fetchall()
+    conn.close()
+
+    return result
