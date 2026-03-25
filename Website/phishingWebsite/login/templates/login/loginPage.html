@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
 </head>
 <body>
+	<h1>Login</h1>
 
-    <h1>Login</h1>
+	<form method="post" onsubmit="event.preventDefault(); submitLogin();">
+		{% csrf_token %}
 
-    <form id="loginForm" method="post">
-        {% csrf_token %}
+		<label for="username">Username</label>
+		<input type="text" id="username" name="username" required>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+		<label for="password">Password</label>
+		<input type="password" id="password" name="password" required>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+		<button type="submit">Login</button>
+	</form>
+</body>
+</html>
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>   
+<script>
 
-        <button type="submit">Login</button>
-    </form>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script>
-        function sanitize(string) {
+	    function sanitize(string) {
+            /*
+            Sanitizes the input for javaScript
+            */
             const map = {
                 '&': '&amp;',
                 '<': '&lt;',
@@ -33,51 +37,60 @@
                 "/": '&#x2F;',
             };
             const reg = /[&<>"'/]/ig;
-            return string.replace(reg, (match) => map[match]);
+            return string.replace(reg, (match)=>(map[match]));
         }
 
-        document.getElementById("loginForm").addEventListener("submit", async function (event) {
-            event.preventDefault();
 
+		// Function for logging in.
+        async function submitLogin() {
+            // Get the values, entered by the user. 
+            
             try {
-                const email = sanitize(document.getElementById("email").value);
-                const password = document.getElementById("password").value;
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                
-                // Hash the password, using SHA512. This is compared to the already stored version of the hashed password, 
-                // which was appended when the user created the account, in the backend.
-                const hashedPassword = CryptoJS.SHA512(password).toString();
-
-                // Basic validation to ensure fields are not empty
+                const email = sanitize(document.getElementById('username').value);
+                const password = sanitize(document.getElementById('password').value);
+            
                 if (!email || !password) {
                     alert("All fields are required.");
                     return;
                 }
-
-                // Create a FormData object to send the email and hashed password to the server
-                const formData = new FormData();
-                formData.append("email", email);
-                formData.append("password", hashedPassword);
+            
+                // Hash the password, using SHA512. This is compared to the already stored version of the hashed password, 
+                // which was appended when the user created the account, in the backend.
+                hashedPassword = await CryptoJS.SHA512(password);
                 
-                const response = await fetch("{% url 'login:index' %}", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": csrfToken
-                    },
+                //Send the data to the backend to be compared
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('password', hashedPassword);   
+
+                fetch('/login', {
+                    method: 'POST',
                     body: formData
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        // Follow the redirect to the login page
+                        window.location.href = response.url;
+
+                    } else if (!response.ok) {
+                        // Handle errors (e.g., invalid 2FA code)
+                        return response.text().then(text => {
+                            alert(`Error : ${text}`);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating user:', error);
+                    alert('An error occurred while creating the user. Please try again.');
                 });
 
-                if (response.redirected) {
-                    window.location.href = response.url;
-                } else if (!response.ok) {
-                    const text = await response.text();
-                    alert(`Error: ${text}`);
-                }
+
+
             } catch (error) {
-                console.error("Error logging in:", error);
                 alert("An unexpected error occurred. Please try again.");
             }
-        });
+        }
     </script>
+    </div>
 </body>
 </html>

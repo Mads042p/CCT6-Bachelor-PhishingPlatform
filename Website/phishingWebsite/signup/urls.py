@@ -8,6 +8,6 @@ urlpatterns = [
     path('goToDashboard/', views.goToDashboard, name='goToDashboard'),
     path('companyCreation/', views.companyCreation, name='companyCreation'),
     path('createCompany/', views.createCompany, name='createCompany'),
-    path('goToDashboard/', views.goToDashboard, name='goToDashboard'),
+    path('login/', views.goToDashboard, name='loginPage'),
 ]
 

@@ -36,19 +36,25 @@ def goToDashboard(request):
 def companyCreation(request):
     return render(request, 'signup/companyCreation.html')
 
-def goToDashboard(request):
-    return redirect('dashboard:dashboard')
-
 def createCompany(request):
     if request.method == "POST":
         companyName = request.POST.get("companyName")
-        adminEmail = request.POST.get("adminEmail")
+        encryptedEmail = request.POST.get("encryptedEmail")
         companyCode = request.POST.get("companyCode")
-        print(f"Company Name: {companyName}, Admin Email: {adminEmail}, companyCode: {companyCode}")
+        iv = request.POST.get("iv")
+        CVRNumber = request.POST.get("CVRNumber")
+        print(f"Company Name: {companyName}, Encrypted Email: {encryptedEmail}, companyCode: {companyCode}, IV: {iv}")
         
+        insertData("CompanyTable", {
+            "CompanyName": companyName,
+            "AdminEmail": encryptedEmail,
+            "CompanyCode": companyCode,
+            "CVRNumber": CVRNumber,
+            "IV": iv
+        })
         # Here you would typically create the company in the database and generate a unique company code
         # For demonstration, we will just print the values and return a success message
         
-        return HttpResponse(f"Company '{companyName}' created successfully with admin email '{adminEmail}'!")
-    
-    return goToDashboard(request)
+        return redirect('signup:signup')
+
+    return render(request, 'signup/companyCreation.html')

@@ -7,14 +7,20 @@ def cursorConnect():
     
     return conn, cursor
     
-
-def InsertData(tableName, data):
+# Command for inserting new data into the database.
+def insertData(table_name, data):
     conn, cursor = cursorConnect()
-    print("From SQL:", data)
-    query = f"INSERT INTO {tableName} (Name, Email, Password, Company, IsAdmin) VALUES (?, ?, ?, ?, ?);"
-    cursor.execute(query, data)
+
+    """Inserts data into the specified table securely using parameterized queries."""
+    columns = ", ".join(data.keys())
+    # Make the input from the user to a paremterized quiery using variabels.
+    placeholders = ", ".join(["?" for _ in data])
+    values = tuple(data.values())
+    query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    cursor.execute(query, values)
     conn.commit()
     conn.close()
+    
 
 def GetData(tableName):
     conn, cursor = cursorConnect()
