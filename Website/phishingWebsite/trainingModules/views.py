@@ -19,3 +19,6 @@ def goToModules(request):
     
 def goToAchievements(request):
     return redirect('achievements:achievements')
+
+def phishingExplained(request):
+    return render(request, 'trainingModules/phishingExplained.html')
