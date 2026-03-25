@@ -55,8 +55,7 @@
             const company = document.getElementById("companyName").value;
             const email = document.getElementById("adminEmail").value;
             const companyCode = company.slice(0, 4) + Math.floor(1000 + Math.random()*9000);
-            console.log(companyCode);
-
+            const CVRNumber = document.getElementById("CVRnr").value;
             const derivedKey = await deriveKey(email, companyCode);
             const encryptedEmail = await encryptData(email, derivedKey);
             console.log("encryptedEmail:", encryptedEmail);
@@ -91,6 +90,9 @@
             })
             .then(response => {
                 if (response.redirected) {
+
+                    alert("Company code created successfully! Your company code is: " + companyCode + ". Please save this code for future reference. \nRedirecting to Sign Up page");
+
                     window.location.href = response.url;
                 }
             })
