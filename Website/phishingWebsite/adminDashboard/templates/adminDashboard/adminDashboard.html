@@ -30,7 +30,7 @@
 					Leaderboard
 				</a>
 				<a href="#" onclick="goToModules()">
-					Trainingmodules
+					Training Modules
 				</a>
 				<a href="#" onclick="goToAdminDashboard()">
 					Admin Dashboard
@@ -55,8 +55,17 @@
     <div class="app-body">
         <div></div>
         <div>
-            <h1>Admin dashboard</h1>
-            <h3>You now have admin powers. Congrats!</h3>
+            <h1>Employees in {{ company }}</h1>
+    		<ul id="employee-list">
+        		{% for employee in employees %}
+            		<li class="employee">
+                		<strong>{{ employee.name }}</strong><br>
+                		<span><i>{{ employee.email }}</i></span>
+            		</li>
+        		{% empty %}
+            		<li>No employees found.</li>
+        		{% endfor %}
+    		</ul>
         </div>
         <div></div>
     </div>

@@ -57,3 +57,16 @@ def getUserAchievements(UserID):
     conn.close()
 
     return result
+
+def getEmployees(company):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""SELECT ID, Name, Email
+                FROM UserData
+                WHERE Company = ?"""
+    cursor.execute(query, (company,))
+    conn.commit()
+    result = cursor.fetchall()
+    conn.close()
+
+    return result

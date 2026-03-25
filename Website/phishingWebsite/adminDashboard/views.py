@@ -1,8 +1,23 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from sqlmanager.views import *
 
 def adminDashboard(request):
-    return render(request, 'adminDashboard/adminDashboard.html')
+    # Hard-coded company
+    company = "Novo"
+
+    rows = getEmployees("Novo")
+    employees = []
+
+    for row in rows:
+        employee = {
+            "id": row[0],
+            "name": row[1],
+            "email": row[2]
+        }
+        employees.append(employee)
+
+    return render(request, 'adminDashboard/adminDashboard.html', {"employees": employees, "company": company})
 
 def goToDashboard(request):
     return redirect('dashboard:dashboard')

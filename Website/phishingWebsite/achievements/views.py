@@ -40,8 +40,6 @@ def achievements(request):
         if achievement["id"] in completedAchievements:
             achievement["completed"] = True
     
-    print(achievements)
-
     return render(request, 'achievements/achievements.html', {"achievements": achievements})
 
 def goToDashboard(request):
