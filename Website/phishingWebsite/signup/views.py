@@ -26,7 +26,7 @@ def goToDashboard(request):
         print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}")
 
         data = (name, email, password, company, isAdmin)
-        InsertData(tableName, data)
+        insertData(tableName, data)
         
     
         return redirect('dashboard:dashboard')
