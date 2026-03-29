@@ -13,19 +13,21 @@ def goToDashboard(request):
 
     if request.method == "POST":
         name = request.POST.get("name")
-        email = request.POST.get("email")
+        email = request.POST.get("encryptedEmail")
         password = request.POST.get("password")
         company = request.POST.get("company")
         isAdmin = request.POST.get("isAdmin")
+        iv = request.POST.get("iv")
         
         if isAdmin == "true":
             isAdmin = 1
         else:
             isAdmin = 0
         
-        print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}")
+        print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}, iv: {iv}")
 
-        data = (name, email, password, company, isAdmin)
+        data = {"name": name, "email": email, "password": password, "company": company, "isAdmin": isAdmin, "iv": iv}
+        print("type is: ", type(data))
         insertData(tableName, data)
         
     
