@@ -11,10 +11,15 @@ def index(request):
         password = request.POST.get("password")
         print(f"Email: {email}, Password: {password}")
         
-        getHashedPassword(tableName, email)
-        
-        
-        return redirect("loginSuccess")
+        dbPassword = getHashedPassword(tableName, email)
+        #element 0 is the userID, element 1 is the hashed password
+        if dbPassword[1] == password:
+            
+            request.session['userID'] = dbPassword[0]
+            
+            return redirect("login:loginSuccess")
+        else: 
+            return render(request, 'login/loginPage.html', {'error': 'Invalid credentials'})
 
     return render(request, 'login/loginPage.html')
 
