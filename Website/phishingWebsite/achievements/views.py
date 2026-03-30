@@ -4,8 +4,11 @@ from django.http import HttpResponse
 from sqlmanager.views import *
 
 def achievements(request):
-    # Hard-coded user
-    UserID = 5
+    # Get User ID from session cookie
+    userID = request.session.get("userID")
+    
+    if not userID:
+        return redirect('login:index')
 
     # All Achievements
     rows = GetData("Achievements")
@@ -21,7 +24,7 @@ def achievements(request):
         achievements.append(achievement)
 
     # User's Achievements
-    rows = getUserAchievements(UserID)
+    rows = getUserAchievements(userID)
     userAchievements = []
 
     for row in rows:
@@ -50,7 +53,7 @@ def goToAdminDashboard(request):
 
 def goToLeaderboard(request):
     return redirect('leaderboard:leaderboard')
-   
+
 def goToModules(request):
     return redirect('trainingModules:trainingModules')
     

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup page</title>
 </head>
-<div class="login-container">
-        <h2><em>Login</em></h2>
-        <form id="loginForm">
+<div class="signup-container">
+        <h2><em>Sign up</em></h2>
+        <form id="signupForm">
             {% csrf_token %}
 
             <label for="name"><em>Name</em></label>
@@ -25,7 +25,7 @@
             <lable for="isAdmin"><em>Is Admin?</em></lable>
             <input type="checkbox" id="isAdmin" name="isAdmin">
             
-            <button type="button" onclick="createUser()"><em>login</em></button>
+            <button type="button" onclick="createUser()"><em>Sign up</em></button>
             <br>
             <!-- Skift /signup til det rigtige link -->
             <br>
