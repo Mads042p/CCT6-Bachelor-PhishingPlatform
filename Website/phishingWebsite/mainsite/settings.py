@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'leaderboard',
     'signup',
     'trainingModules',
+    'landingPage',
 ]
 
 MIDDLEWARE = [

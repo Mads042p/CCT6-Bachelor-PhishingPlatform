@@ -5,5 +5,6 @@ from django.shortcuts import redirect
 
 
 def index(request):
-    return redirect('landingPage:index')
+    return render(request, 'landingPage/index.html')
+
 
