@@ -26,7 +26,14 @@ def goToDashboard(request):
         
         print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}, iv: {iv}")
 
-        data = {"name": name, "email": email, "password": password, "company": company, "isAdmin": isAdmin, "iv": iv}
+        data = {
+            "name": name, 
+            "email": email, 
+            "password": password, 
+            "company": company, 
+            "isAdmin": isAdmin, 
+            "iv": iv}
+        
         print("type is: ", type(data))
         insertData(tableName, data)
         

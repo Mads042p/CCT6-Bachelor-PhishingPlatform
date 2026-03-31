@@ -26,6 +26,18 @@
             <br>
                 <a href="{% url 'signup:signup' %}"><em>Back</em></a>
         </form>
+        <br>
+        <label id="companyCodeLabel"> Company Code: </label>
+
+        <br><br>
+
+        <label for="confirmCode">Type the company code to continue:</label>
+        <input type="text" id="confirmCode" disabled>
+
+        <br><br>
+
+<button id="continueBtn" disabled>Continue to Sign Up</button>
+
         </div>
 </body>
 </html> 
@@ -89,12 +101,32 @@
                 body: formData
             })
             .then(response => {
-                if (response.redirected) {
 
-                    alert("Company code created successfully! Your company code is: " + companyCode + ". Please save this code for future reference. \nRedirecting to Sign Up page");
+                const companyCodeLabel = document.getElementById("companyCodeLabel");
+                const confirmInput = document.getElementById("confirmCode");
+                const continueBtn = document.getElementById("continueBtn");
 
-                    window.location.href = response.url;
+                companyCodeLabel.textContent = "Company Code: " + companyCode;
+                
+                // Enable input field
+                confirmInput.disabled = false;
+                confirmInput.focus();
+
+                    // Check if user typed correct code
+                confirmInput.addEventListener("input", () => {
+                    if (confirmInput.value === companyCode) {
+                        continueBtn.disabled = false;
+                    } else {
+                        continueBtn.disabled = true;
                 }
+                });
+
+                // Redirect only after correct input
+                continueBtn.onclick = () => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                };
             })
             .catch(error => {
                 console.error('Error creating company code:', error);
