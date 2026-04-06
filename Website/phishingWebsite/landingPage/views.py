@@ -7,4 +7,5 @@ from django.shortcuts import redirect
 def index(request):
     return render(request, 'landingPage/index.html')
 
-
+def about(request):
+    return render(request, 'landingPage/about.html')
