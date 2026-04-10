@@ -17,7 +17,7 @@ def index(request):
             
             request.session['userID'] = dbPassword[0]
             
-            return redirect("login:loginSuccess")
+            return redirect("dashboard:dashboard")
         else: 
             return render(request, 'login/loginPage.html', {'error': 'Invalid credentials'})
 

@@ -38,7 +38,7 @@ def goToDashboard(request):
         insertData(tableName, data)
         
     
-        return redirect('dashboard:dashboard')
+        return redirect('login:index')
     return render(request, 'login/loginPage.html')
 
 
