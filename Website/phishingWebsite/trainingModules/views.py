@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 def trainingModules(request):
+    userID = request.session.get("userID")
+    
+    if not userID:
+        return redirect('login:index')
+    
     return render(request, 'trainingModules/trainingModules.html')
 
 

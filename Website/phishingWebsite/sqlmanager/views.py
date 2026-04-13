@@ -41,7 +41,7 @@ def DeleteData(tableName, email):
 def getHashedPassword(tableName, email):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
-    query = f"SELECT ID, Password FROM {tableName} WHERE Email = ?;"
+    query = f"SELECT * FROM {tableName} WHERE Email = ?;"
     cursor.execute(query, (email,))
     conn.commit()
     x = cursor.fetchall()[0]

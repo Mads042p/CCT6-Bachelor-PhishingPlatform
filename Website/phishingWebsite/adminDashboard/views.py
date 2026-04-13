@@ -3,8 +3,12 @@ from django.shortcuts import redirect
 from sqlmanager.views import *
 
 def adminDashboard(request):
+    userID = request.session.get("userID")
+    
+    if not userID:
+        return redirect('login:index')
     # Hard-coded company
-    company = "Novo"
+    company = request.session.get("company")
 
     rows = getEmployees("Novo")
     employees = []

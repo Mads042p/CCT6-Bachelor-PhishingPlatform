@@ -2,6 +2,11 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 def leaderboard(request):
+    userID = request.session.get("userID")
+    
+    if not userID:
+        return redirect('login:index')
+    
     return render(request, 'leaderboard/leaderboard.html')
 
 def goToDashboard(request):
