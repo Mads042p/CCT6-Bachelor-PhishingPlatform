@@ -1,96 +1,112 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Phishing Awareness Platform</title>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+
 </head>
 
 <body>
-    <h1>Login</h1>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>PhishMe Platform</p>
+            </div>
 
-    <form id="loginForm">
-        {% csrf_token %}
+            <form id="loginForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
 
-        <label for="email">Email</label>
-        <input type="text" id="email" name="email" required>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+            
+                <button type="button" class="login-button" onclick="submitLogin()">Login</button>
+            </form>
+        </div>
+    </div>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
-        <button type="button" onclick="submitLogin()">Login</button>
-    </form>
+            <script>
+                // Get CSRF token from the hidden input
+                const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                const csrfToken = csrfInput ? csrfInput.value : '';
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
-    <script>
-        // Get CSRF token from the hidden input
-        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
-        const csrfToken = csrfInput ? csrfInput.value : '';
-
-        function sanitize(string) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#x27;',
-                "/": '&#x2F;',
-            };
-            const reg = /[&<>"'/]/ig;
-            return string.replace(reg, (match) => map[match]);
-        }
-
-        async function submitLogin() {
-            try {
-                const email = sanitize(document.getElementById('email').value);
-                const password = sanitize(document.getElementById('password').value);
-
-                if (!email || !password) {
-                    alert("All fields are required.");
-                    return;
+                function sanitize(string) {
+                    const map = {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#x27;',
+                        "/": '&#x2F;',
+                    };
+                    const reg = /[&<>"'/]/ig;
+                    return string.replace(reg, (match) => map[match]);
                 }
 
-                // Hash password correctly (string!)
-                const hashedPassword = CryptoJS.SHA512(password).toString();
+                async function submitLogin() {
+                    try {
+                        const email = sanitize(document.getElementById('email').value);
+                        const password = sanitize(document.getElementById('password').value);
 
-                const formData = new FormData();
-                formData.append('email', email);
-                formData.append('password', hashedPassword);
+                        if (!email || !password) {
+                            alert("All fields are required.");
+                            return;
+                        }
 
-                fetch("{% url 'login:index' %}", {
-                    method: "POST",
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: formData
-                })
-                .then(response => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
-                    }
+                        // Hash password correctly (string!)
+                        const hashedPassword = CryptoJS.SHA512(password).toString();
 
-                    if (!response.ok) {
-                        return response.text().then(text => {
-                            alert("Error: " + text);
+                        const formData = new FormData();
+                        formData.append('email', email);
+                        formData.append('password', hashedPassword);
+
+                        fetch("{% url 'login:index' %}", {
+                            method: "POST",
+                            headers: {
+                                'X-CSRFToken': csrfToken
+                            },
+                            body: formData
+                        })
+                        .then(response => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                                return;
+                            }
+
+                            if (!response.ok) {
+                                return response.text().then(text => {
+                                    alert("Error: " + text);
+                                });
+                            }
+
+                            return response.text().then(text => {
+                                console.log("Success:", text);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Fetch error:', error);
+                            alert('An error occurred. Please try again.');
                         });
+
+                    } catch (error) {
+                        console.error(error);
+                        alert("An unexpected error occurred. Please try again.");
                     }
-
-                    return response.text().then(text => {
-                        console.log("Success:", text);
-                    });
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    alert('An error occurred. Please try again.');
-                });
-
-            } catch (error) {
-                console.error(error);
-                alert("An unexpected error occurred. Please try again.");
-            }
-        }
-    </script>
+                }
+            </script>
+        </div>
+    </div>
 </body>
 </html>

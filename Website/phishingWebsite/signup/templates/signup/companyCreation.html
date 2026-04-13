@@ -1,44 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Creation</title>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
 </head>
 <body>
-    <div class="company-creation-container">
-        <h2><em>Company Creation</em></h2>
-        <form  id="companyCreationForm">
-        {% csrf_token %}
-        
-        <label for="companyName"><em>Company Name</em></label>
-        <input type="text" id="companyName" name="companyName" required>
-        <br>
-        <label for="CVRnr"><em>CVR Number</em></label>
-        <input type="number" id="CVRnr" name="CVRnr" required>
-        <br>
-        <label for="adminEmail"><em>Admin Email</em></label>
-        <input type="email" id="adminEmail" name="adminEmail" required>
-        
-        <button type="button" onclick="createCompanyCode()" ><em>Create Company</em></button>
-            <br>
-            <!-- Skift /signup til det rigtige link -->
-            <br>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2><em>Company Creation</em></h2>
+            </div>
+            <form  id="companyCreationForm">
+            {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="companyName"><em>Company Name</em></label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="CVRnr"><em>CVR Number</em></label>
+                    <input type="number" id="CVRnr" name="CVRnr" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminEmail"><em>Admin Email</em></label>
+                    <input type="email" id="adminEmail" name="adminEmail" required>
+                </div>  
+                
+                <button type="button" class="login-button" onclick="createCompanyCode()" ><em>Create Company</em></button>
+                    
+                <!-- Skift /signup til det rigtige link -->
                 <a href="{% url 'signup:signup' %}"><em>Back</em></a>
-        </form>
-        <br>
-        <label id="companyCodeLabel"> Company Code: </label>
+            </form>
 
-        <br><br>
+            <div class="form-group">
+                <label id="companyCodeLabel"> Company Code: </label>
+            </div>
 
-        <label for="confirmCode">Type the company code to continue:</label>
-        <input type="text" id="confirmCode" disabled>
+            <div class="form-group">
+                <label for="confirmCode">Type the company code to continue:</label>
+                <input type="text" id="confirmCode" disabled>
+            </div>
 
-        <br><br>
-
-<button id="continueBtn" disabled>Continue to Sign Up</button>
-
+            <button id="continueBtn" class="login-button" disabled>Continue to Sign Up</button>
         </div>
+    </div>
 </body>
 </html> 
 
