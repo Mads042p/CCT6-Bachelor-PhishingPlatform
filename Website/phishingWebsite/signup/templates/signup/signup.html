@@ -77,27 +77,11 @@ async function createUser() {
                 // which was appended when the user created the account, in the backend.
                 const hashedPassword = CryptoJS.SHA512(password).toString();
 
-                const derivedKey = await deriveKey(email, hashedPassword);
-                const encryptedEmail = await encryptData(email, derivedKey);
-                const iv = encryptedEmail.iv;
-                
-                const hex = Array.from(encryptedEmail.encryptedData)
-                    .map(b => b.toString(16).padStart(2, "0"))
-                    .join("");
-            
-                const decrypted = await decryptMessage(
-                derivedKey,
-                encryptedEmail.encryptedData,
-                encryptedEmail.iv
-                );
-                const decoder = new TextDecoder("utf-8");
-                
 
 
                 //Send the data to the backend to be compared
                 const formData = new FormData();
-                formData.append('encryptedEmail', Array.from(encryptedEmail.encryptedData).map(b => b.toString(16).padStart(2, "0")).join(""));
-                formData.append('iv', Array.from(encryptedEmail.iv).map(b => b.toString(16).padStart(2, "0")).join(""));
+                formData.append('email', email);
                 formData.append('password', hashedPassword);
                 formData.append('name', name);
                 formData.append('company', company);
@@ -133,6 +117,26 @@ async function createUser() {
                 alert("An unexpected error occurred. Please try again.");
             }
         }
+
+
+        /*
+
+
+                const derivedKey = await deriveKey(email, hashedPassword);
+                const encryptedEmail = await encryptData(email, derivedKey);
+                const iv = encryptedEmail.iv;
+                
+                const hex = Array.from(encryptedEmail.encryptedData)
+                    .map(b => b.toString(16).padStart(2, "0"))
+                    .join("");
+            
+                const decrypted = await decryptMessage(
+                derivedKey,
+                encryptedEmail.encryptedData,
+                encryptedEmail.iv
+                );
+                const decoder = new TextDecoder("utf-8");
+                
 
 
         function deriveKey(Email, hashedPassword){
@@ -183,6 +187,7 @@ async function createUser() {
             // The iv value is the same as that used for encryption
             return window.crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
     }
+        */
 
 
 </script>

@@ -3,6 +3,8 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from sqlmanager.views import *
 
+
+
 tableName = "UserData"
 
 def index(request):
@@ -10,9 +12,10 @@ def index(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         print(f"Email: {email}, Password: {password}")
-        
+                
         dbPassword = getHashedPassword(tableName, email)
         #element 0 is the userID, element 1 is the hashed password
+        
         if dbPassword[1] == password:
             
             request.session['userID'] = dbPassword[0]
