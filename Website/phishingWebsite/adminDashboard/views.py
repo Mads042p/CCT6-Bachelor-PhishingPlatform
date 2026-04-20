@@ -10,7 +10,7 @@ def adminDashboard(request):
     # Hard-coded company
     company = request.session.get("company")
 
-    rows = getEmployees("Novo")
+    rows = getEmployees(company)
     employees = []
 
     for row in rows:

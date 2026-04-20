@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import sqlite3
+import json
 
 def cursorConnect():
     conn = sqlite3.connect("db.db", check_same_thread=False)
@@ -76,3 +77,20 @@ def getEmployees(company):
     conn.close()
 
     return result
+
+def getQuiz(quizID):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+
+    query = """SELECT Question
+               FROM Quiz
+               WHERE QuizID = ?"""
+    cursor.execute(query, (quizID,))
+    
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Convert each row's JSON string into a dict
+    quiz_list = [json.loads(row[0]) for row in rows]
+
+    return quiz_list

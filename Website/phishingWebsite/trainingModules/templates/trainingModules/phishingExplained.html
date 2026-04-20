@@ -6,6 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Training Modules</title>
 	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
 </head>
 <body>
 <div class="app">
@@ -40,12 +47,10 @@
 			</div>
 		</div>
 		<div class="app-header-actions">
-			<button class="user-profile" onclick="goToDashboard()">
-				<span>Tobias Vincent Steenberg</span>
-				<span>
-					<img src="https://scontent-arn2-1.xx.fbcdn.net/v/t1.6435-9/205383520_1660514457471811_9884424356248054_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=aKAg_KLNvOYQ7kNvwFSVV5O&_nc_oc=AdqFnOHpINMC3NcIEuRM7XvxOZFRMDml0YNxz9QNAlmcQxUTHR1QM-cdhP3eWmT8EyU&_nc_zt=23&_nc_ht=scontent-arn2-1.xx&_nc_gid=qaZYLVNLeHtJjwZJt1I6Ig&_nc_ss=7a30f&oh=00_AfyB8D7uX9bE1bKE-UVT-wMKIBGbks1_9Koy8_UVz4JKyA&oe=69E4B394" />
-				</span>
-			</button>
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
 		</div>
 		<div class="app-header-mobile">
 			<button class="icon-button large">
@@ -54,20 +59,88 @@
 		</div>
 
 	</header>
-    <div class="app-body">
-        <div></div>
-        <div>
-            <h1>What is Phishing?</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut at dui porttitor, dictum erat et, porta tortor. In hac habitasse platea dictumst. Duis lorem dolor, porta vitae scelerisque non, malesuada quis mauris. Vivamus sed imperdiet odio. Nulla quam metus, imperdiet mollis ligula ut, porta placerat ante. Ut eget nunc sem. Aliquam efficitur lacinia erat non vehicula. Ut dictum semper nunc sit amet consectetur. Nullam ex libero, rutrum vitae ullamcorper vel, commodo eu massa. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vestibulum vitae nisl sem. Nulla finibus tristique enim, sed sagittis orci molestie quis. </p>
-            <p>Vivamus sed hendrerit ex, et mattis lorem. Quisque finibus quis augue in cursus. Pellentesque cursus, nisi id placerat viverra, tellus arcu pretium urna, sed rutrum elit justo ac odio. Duis ut leo ac ligula efficitur sagittis. Sed a neque id lorem iaculis blandit. Quisque ut luctus dolor, vel efficitur lorem. Pellentesque et risus sit amet velit euismod viverra. Nulla tempor eros at augue eleifend, ac gravida libero facilisis. </p>
-            <p>Sed imperdiet mi at odio imperdiet, vitae ornare augue pretium. Vestibulum ac erat sapien. Nullam gravida magna mauris, quis laoreet velit congue ut. Fusce venenatis velit ornare dui volutpat, non mattis mi ultricies. Donec efficitur est vel enim bibendum, vel pharetra quam tincidunt. Aliquam auctor, dolor et viverra tempus, neque libero rhoncus dolor, eu mollis libero tellus a enim. Suspendisse condimentum tincidunt magna. Nunc eget ornare arcu. Nullam rutrum placerat ante ut aliquet. Fusce auctor nunc maximus lectus sodales euismod eu eleifend ligula. Vivamus consequat massa est, id porttitor ex consectetur sed. </p>
-        </div>
-        <div></div>
-    </div>
+	<div class="app-body">
+		<div></div>
+		<body>
+			<div id="quiz">
+				<h1>Interactive Quiz</h1>
+				<div id="question"></div>
+
+				<div id="options"></div>
+			</div>
+		</body>
+		<div></div>
+	</div>
 </div>
+{{ quizData|json_script:"quiz-data" }}
 </body>
 </html>
 
+<script>
+	const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
+    console.log(quizData);
+
+	const questionElement = document.getElementById("question");
+	const optionsElement = document.getElementById("options");	
+
+	let currentQuestion = 0;
+	let score = 0;
+
+	function showQuestion() {
+		const question = quizData[currentQuestion];
+		questionElement.innerText = question.question;
+
+		optionsElement.innerHTML = "";
+		question.options.forEach(option => {
+			const button = document.createElement("button");
+			button.classList.add('login-button');
+			button.innerText = option;
+			optionsElement.appendChild(button);
+			button.addEventListener("click", selectAnswer);
+		});
+	}
+
+	function selectAnswer(e) {
+		const selectedButton = e.target;
+		const answer = quizData[currentQuestion].answer;
+		optionsElement.innerHTML = "";
+		const feedback = document.createElement("p");
+		feedback.classList.add('body');
+
+		if (selectedButton.innerText === answer) {
+			score++;
+			feedback.innerText = "That was correct yippie!";
+		} else {
+			feedback.innerText = "That was wrong womp womp";
+		}
+
+		optionsElement.appendChild(feedback);
+		const nextButton = document.createElement("button");
+		nextButton.classList.add('logout-button');
+		nextButton.innerText = "Next Question";
+		optionsElement.appendChild(nextButton);
+		nextButton.addEventListener("click", showResult);
+	}
+
+function showResult() {
+	currentQuestion++;
+
+	if (currentQuestion < quizData.length) {
+		showQuestion();
+	} else {
+		showScore();
+	}
+}
+
+	function showScore() {
+		quiz.innerHTML = `
+    	<h1>Quiz Completed!</h1>
+    	<p>Your score: ${score}/${quizData.length}</p>
+		`;
+	}
+
+	showQuestion();
+</script>
 
 <script>
     function goToAchievements() {
@@ -84,5 +157,8 @@
 	}
 	function goToDashboard() {
 		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
+	}
+	function logout() {
+		window.location.href = "{% url 'login:logout' %}";
 	}
 </script>

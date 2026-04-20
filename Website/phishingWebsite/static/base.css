@@ -889,90 +889,102 @@ button {
 }
 
 .not-completed {
-    color: #888;
-    font-style: italic;
+	color: #888;
+	font-style: italic;
 }
 
 .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 80vh;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 80vh;
+	width: 100%;
+	max-width: 400px;
+	margin: 0 auto;
 }
+
 .login-card {
-    width: 100%;
-    padding: 2.5rem;
-    background-color: var(--c-gray-700);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	padding: 2.5rem;
+	background-color: var(--c-gray-700);
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
+
 .login-header {
-    text-align: center;
-    margin-bottom: 2rem;
+	text-align: center;
+	margin-bottom: 2rem;
 }
+
 .login-header h1 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-    color: var(--c-text-primary);
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+	color: var(--c-text-primary);
 }
 
 .login-header p {
-    color: var(--c-text-tertiary);
-    font-size: 0.95rem;
+	color: var(--c-text-tertiary);
+	font-size: 0.95rem;
 }
+
 .form-group {
-    margin-bottom: 1.5rem;
+	margin-bottom: 1.5rem;
 }
+
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--c-text-secondary);
-    font-weight: 500;
-    font-size: 0.95rem;
+	display: block;
+	margin-bottom: 0.5rem;
+	color: var(--c-text-secondary);
+	font-weight: 500;
+	font-size: 0.95rem;
 }
+
 .form-group input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--c-gray-600);
-    border-radius: 6px;
-    background-color: var(--c-gray-800);
-    color: var(--c-text-primary);
-    font-size: 1rem;
-    transition: 0.25s ease;
+	width: 100%;
+	padding: 0.75rem;
+	border: 1px solid var(--c-gray-600);
+	border-radius: 6px;
+	background-color: var(--c-gray-800);
+	color: var(--c-text-primary);
+	font-size: 1rem;
+	transition: 0.25s ease;
 }
+
 .form-group input:hover {
-    border-color: var(--c-gray-500);
+	border-color: var(--c-gray-500);
 }
+
 .form-group input:focus {
-    outline: 0;
-    box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
-    border-color: var(--c-gray-400);
+	outline: 0;
+	box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
+	border-color: var(--c-gray-400);
 }
+
 .login-button {
-    width: 100%;
-    padding: 0.75rem;
-    background: linear-gradient(135deg, var(--c-green-500), var(--c-olive-500));
-    color: var(--c-gray-900);
-    border: 0;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.25s ease;
-    margin-top: 1rem;
+	width: 100%;
+	padding: 0.75rem;
+	background: linear-gradient(135deg, var(--c-green-500), var(--c-olive-500));
+	color: var(--c-gray-900);
+	border: 0;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: 0.25s ease;
+	margin-top: 1rem;
 }
+
 .login-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(69, 255, 188, 0.2);
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px rgba(69, 255, 188, 0.2);
 }
+
 .login-button:focus {
-    outline: 0;
-    box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
+	outline: 0;
+	box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
 }
+
 .login-button:disabled {
 	background-color: var(--c-gray-600);
 	color: var(--c-gray-400);
@@ -980,26 +992,29 @@ button {
 	box-shadow: none;
 	transform: none;
 }
+
 .login-footer {
-    text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--c-gray-600);
-    color: var(--c-text-tertiary);
-    font-size: 0.9rem;
+	text-align: center;
+	margin-top: 1.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--c-gray-600);
+	color: var(--c-text-tertiary);
+	font-size: 0.9rem;
 }
 
 
 /* Remove number input spinners on type="number" input field on HTML */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+	/* display: none; <- Crashes Chrome on hover */
+	-webkit-appearance: none;
+	margin: 0;
+	/* <-- Apparently some margin are still there even though it's hidden */
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+	-moz-appearance: textfield;
+	/* Firefox */
 }
 
 .logout-button {
@@ -1017,4 +1032,23 @@ input[type=number] {
 .logout-button:focus {
 	background-color: var(--c-gray-600);
 	color: var(--c-text-primary);
+}
+
+#quiz {
+	max-width: 500px;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #66ebf0;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(198, 222, 60, 0.2);
+}
+
+#question {
+	margin-bottom: 20px;
+}
+
+#options {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(2, 1fr);
 }

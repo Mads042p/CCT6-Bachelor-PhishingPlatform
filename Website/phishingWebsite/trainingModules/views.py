@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from sqlmanager.views import *
 
 # Create your views here.
 def trainingModules(request):
@@ -26,4 +27,6 @@ def goToAchievements(request):
     return redirect('achievements:achievements')
 
 def phishingExplained(request):
-    return render(request, 'trainingModules/phishingExplained.html')
+    quizData = getQuiz("Module1")
+    print(quizData)
+    return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})

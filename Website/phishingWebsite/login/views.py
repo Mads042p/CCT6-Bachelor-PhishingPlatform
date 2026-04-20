@@ -11,8 +11,7 @@ def index(request):
                 
         dbPassword = getHashedPassword("UserData", email)
         
-        if dbPassword[3] == password:
-            
+        if dbPassword[3] == password:            
             request.session['userID'] = dbPassword[0] # User ID
             request.session['name'] = dbPassword[1] # User Name
             request.session['email'] = dbPassword[2] # User Email
