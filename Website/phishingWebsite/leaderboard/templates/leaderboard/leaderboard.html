@@ -6,6 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Leaderboard</title>
 	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
 </head>
 <body>
 <div class="app">
@@ -40,12 +47,10 @@
 			</div>
 		</div>
 		<div class="app-header-actions">
-			<button class="user-profile" onclick="goToDashboard()">
-				<span>Tobias Vincent Steenberg</span>
-				<span>
-					<img src="https://scontent-arn2-1.xx.fbcdn.net/v/t1.6435-9/205383520_1660514457471811_9884424356248054_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=aKAg_KLNvOYQ7kNvwFSVV5O&_nc_oc=AdqFnOHpINMC3NcIEuRM7XvxOZFRMDml0YNxz9QNAlmcQxUTHR1QM-cdhP3eWmT8EyU&_nc_zt=23&_nc_ht=scontent-arn2-1.xx&_nc_gid=qaZYLVNLeHtJjwZJt1I6Ig&_nc_ss=7a30f&oh=00_AfyB8D7uX9bE1bKE-UVT-wMKIBGbks1_9Koy8_UVz4JKyA&oe=69E4B394" />
-				</span>
-			</button>
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
 		</div>
 		<div class="app-header-mobile">
 			<button class="icon-button large">
@@ -83,5 +88,8 @@
 	}
 	function goToDashboard() {
 		window.location.href = "{% url 'leaderboard:goToDashboard' %}";
+	}
+	function logout() {
+		window.location.href = "{% url 'login:logout' %}";
 	}
 </script>

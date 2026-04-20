@@ -4,6 +4,11 @@ from django.http import HttpResponse
 
 
 def dashboard(request):
+    userID = request.session.get("userID")
+    
+    if not userID:
+        return redirect('login:index')
+
     return render(request, 'dashboard/dashboard.html')
 
 def goToDashboard(request):
