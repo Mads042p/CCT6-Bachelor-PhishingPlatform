@@ -137,6 +137,29 @@ function showResult() {
     	<h1>Quiz Completed!</h1>
     	<p>Your score: ${score}/${quizData.length}</p>
 		`;
+		const returnButton = document.createElement("button");
+		returnButton.classList.add('logout-button');
+		returnButton.innerText = "Return to Modules";
+		quiz.appendChild(returnButton);
+		returnButton.addEventListener("click", goToModules);
+
+		const formData = new FormData();
+        formData.append('quizId', quizData[0].quizId);
+        formData.append('score', score);
+        formData.append('total', quizData.length);
+
+		fetch("{% url 'trainingModules:updateUserScore' %}", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": "{{ csrf_token }}"
+			},
+			body: JSON.stringify({
+				quizID: "Module1",
+				score: score,
+				total: quizData.length
+			})
+		});
 	}
 
 	showQuestion();

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from sqlmanager.views import *
+from datetime import datetime
+from django.http import JsonResponse
 
 # Create your views here.
 def trainingModules(request):
@@ -27,6 +29,29 @@ def goToAchievements(request):
     return redirect('achievements:achievements')
 
 def phishingExplained(request):
-    quizData = getQuiz("Module1")
+    quizID = "Module1"
+    quizData = getQuiz(quizID)
     print(quizData)
+
     return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})
+
+def updateUserScore(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        quizID = data.get("quizID")
+        score = data.get("score")
+        total = data.get("total")
+        userID = request.session.get("userID")
+        
+        score = int(score/total * 100)
+
+        previousScore = getScore(userID, quizID)
+        
+        if not previousScore:
+            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+
+        if score > previousScore:
+            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+    
+    return JsonResponse({"status": "ok"})

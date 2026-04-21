@@ -94,3 +94,29 @@ def getQuiz(quizID):
     quiz_list = [json.loads(row[0]) for row in rows]
 
     return quiz_list
+
+def upsertScore(UserID, SourceID, Score, DateTaken):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""INSERT INTO UserPoints (UserID, SourceID, Score, DateTaken)                
+                Values (?, ?, ?, ?)
+                ON CONFLICT(UserID, SourceID)
+                DO UPDATE SET
+                    Score = excluded.Score,
+                    DateTaken = excluded.DateTaken"""
+    cursor.execute(query, (UserID, SourceID, Score, DateTaken,))
+    conn.commit()
+    conn.close()
+
+def getScore(UserID, SourceID):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""SELECT Score
+                FROM UserPoints
+                WHERE UserID = ? AND SourceID = ?"""
+    cursor.execute(query, (UserID, SourceID,))
+    conn.commit()
+    result = cursor.fetchone()
+    conn.close()
+
+    return result[0] if result else None
