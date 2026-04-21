@@ -1,0 +1,338 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Training Modules</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="#" onclick="goToAchievements()">
+					Achievements
+				</a>
+				<a href="#" onclick="goToLeaderboard()">
+					Leaderboard
+				</a>
+				<a href="#" onclick="goToModules()">
+					Training Modules
+				</a>
+				<a href="#" onclick="goToAdminDashboard()">
+					Admin Dashboard
+				</a>
+			</div>
+		</div>
+		<div class="app-header-actions">
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
+		</div>
+		<div class="app-header-mobile">
+			<button class="icon-button large">
+				<i class="ph-list"></i>
+			</button>
+		</div>
+
+	</header>
+
+	<section class="phish-demo">
+		<h2>Try a Phishing Simulation</h2>
+		<p>Can you spot the phishing attempt? Click the email below.</p>
+
+		<div class="email-card" id="emailCard">
+			<div class="email-header">
+				<strong id="senderName"></strong>
+				<span id="senderEmail"></span>
+			</div>
+
+			<div class="email-body", id="emailBody"></div>
+			<p class="email-footer", id="emailFooter"></p>
+		</div>
+		<div class="phish-result-wrong hidden" id="phishResultWrong"></div>
+		<div class="phish-result-correct hidden" id="phishResultCorrect"></div>
+		<button class="is-phish-button" onclick="evaluateAnswer(event, 'phishing')", id="is-phish-button" >Phishing</button>
+		<button class="is-not-phish-button" onclick="evaluateAnswer(event, 'legitimate')" id="is-not-phish-button">Legitimate</button>
+		
+	</section>
+
+</div>
+</body>
+</html>
+
+
+<script>
+	const emails = [
+    {
+        status: "phishing",
+        senderName: "PayPal Security",
+        senderEmail: "no-reply@paypal-secure-alert.com",
+        subject: "Your account has been limited!",
+        body: `<p>Dear Customer,</p>
+                <p>Your PayPal account has been <strong>temporarily limited</strong> due to suspicious login attempts. You must confirm your identity within 24 hours or your account will be permanently closed.</p>
+                <a href="https://www.google.com/" class="phish-link" onclick="handlePhishClick(event)">
+                    Restore My Account
+                </a>`,
+        footer: "PayPal Security Team | This is an automated message, do not reply.",
+        CorrectExplanation: `
+                    <h3>Correct!</h3>
+                    <p>
+                    This was a phishing email. Key red flags: the sender domain was <strong>paypal-secure-alert.com</strong> — not paypal.com. It also used urgency ("24 hours") and fear ("permanently closed") to pressure you into clicking.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`,
+        WrongExplanation: `
+                    <h3>Wrong!</h3>
+                    <p>
+                    This was a phishing email. Key red flags: the sender domain was <strong>paypal-secure-alert.com</strong> — not paypal.com. It also used urgency ("24 hours") and fear ("permanently closed") to pressure you into clicking.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`
+    },
+    {
+        status: "legitimate",
+        senderName: "GitHub",
+        senderEmail: "noreply@github.com",
+        subject: "Your pull request was merged",
+        body: `<p>Hi there,</p>
+                <p>Great news! Your pull request <strong>#142 – Fix login validation bug</strong> was successfully merged into <strong>main</strong> by a collaborator.</p>
+                <p>You can view the changes in your repository at any time from your dashboard.</p>
+                <a href="https://www.google.com/" class="legit-link" onclick="handlePhishClick(event)">
+                    View Pull Request
+                </a>`,
+        footer: "You are receiving this because you are subscribed to this repository. Manage your notifications at github.com.",
+        CorrectExplanation: `
+                    <h3>Correct!</h3>
+                    <p>
+                    This was a legitimate email. The sender domain is <strong>github.com</strong>, the message is informational with no urgency, and it doesn't ask for credentials or personal information.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`,
+        WrongExplanation: `
+                    <h3>Wrong!</h3>
+                    <p>
+                    This was actually a legitimate email. The sender domain is <strong>github.com</strong>, the message is informational with no urgency, and it doesn't ask for credentials or personal information.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`
+    },
+    {
+        status: "phishing",
+        senderName: "HR Department",
+        senderEmail: "hr-update@staffportal-internal.net",
+        subject: "Action Required: Update Your Banking Details for Payroll",
+        body: `<p>Dear Employee,</p>
+                <p>As part of our <strong>annual payroll system upgrade</strong>, all employees are required to re-enter their banking information by <strong>end of day Friday</strong> to ensure uninterrupted salary payments.</p>
+                <p>Please click below to access the secure employee portal and update your details.</p>
+                <a href="https://www.google.com/" class="phish-link" onclick="handlePhishClick(event)">
+                    Update Banking Details
+                </a>`,
+        footer: "HR Department | Internal Use Only | Do not forward this email.",
+        CorrectExplanation: `
+                    <h3>Correct!</h3>
+                    <p>
+                    This was a phishing email. The domain <strong>staffportal-internal.net</strong> is not a real company domain. Legitimate HR departments will never ask you to submit banking details via email. The deadline pressure is also a classic manipulation tactic.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`,
+        WrongExplanation: `
+                    <h3>Wrong!</h3>
+                    <p>
+                    This was a phishing email. The domain <strong>staffportal-internal.net</strong> is not a real company domain. Legitimate HR departments will never ask you to submit banking details via email. The deadline pressure is also a classic manipulation tactic.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`
+    },
+    {
+        status: "legitimate",
+        senderName: "Spotify",
+        senderEmail: "no-reply@spotify.com",
+        subject: "Your receipt from Spotify",
+        body: `<p>Hi there,</p>
+                <p>Thanks for your payment. Here is your monthly receipt for your <strong>Spotify Premium</strong> subscription.</p>
+                <ul>
+                    <li>Plan: Premium Individual</li>
+                    <li>Amount charged: €9.99</li>
+                    <li>Date: April 1, 2026</li>
+                </ul>
+                <p>No action is required. If you have questions about your billing, visit our Help Center.</p>
+                <a href="https://www.google.com/" class="legit-link" onclick="handlePhishClick(event)">
+                    View Receipt
+                </a>`,
+        footer: "Spotify AB | Regeringsgatan 19, SE-111 53 Stockholm, Sweden.",
+        CorrectExplanation: `
+                    <h3>Correct!</h3>
+                    <p>
+                    This was a legitimate email. It comes from <strong>spotify.com</strong>, contains specific billing details, requires no action, and doesn't ask for any credentials or sensitive information.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`,
+        WrongExplanation: `
+                    <h3>Wrong!</h3>
+                    <p>
+                    This was actually a legitimate email. It comes from <strong>spotify.com</strong>, contains specific billing details, requires no action, and doesn't ask for any credentials or sensitive information.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`
+    },
+	{
+        status: "phishing",
+        senderName: "Microsoft Account Team",
+        senderEmail: "account-alert@microsoft-accounts-support.org",
+        subject: "Sign-in attempt blocked – Verify your identity now",
+        body: `<p>Dear User,</p>
+                <p>We blocked a sign-in attempt to your Microsoft account from an <strong>unrecognized device in Romania</strong>. If this was not you, your account may be compromised.</p>
+                <p>Please verify your identity immediately to secure your account and review recent activity.</p>
+                <a href="https://www.google.com/" class="phish-link" onclick="handlePhishClick(event)">
+                    Secure My Account
+                </a>`,
+        footer: "Microsoft Corporation | One Microsoft Way, Redmond, WA 98052",
+        CorrectExplanation: `
+                    <h3>Correct!</h3>
+                    <p>
+                    This was a phishing email. Despite looking official, the sender domain is <strong>microsoft-accounts-support.org</strong> — not microsoft.com. Using a scary location ("Romania") is a classic fear tactic, and the real Microsoft address in the footer is just copied text — anyone can write that.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`,
+        WrongExplanation: `
+                    <h3>Wrong!</h3>
+                    <p>
+                    This was a phishing email. Despite looking official, the sender domain is <strong>microsoft-accounts-support.org</strong> — not microsoft.com. Using a scary location ("Romania") is a classic fear tactic, and the real Microsoft address in the footer is just copied text — anyone can write that.
+                    </p>
+                    <button onclick="nextMail()">Next Mail</button>`
+    },
+	{
+		status: "phishing",
+		senderName: "IT Support",
+		senderEmail: "support@company-secure.com",
+		subject: "Unusual activity detected",
+		body: `<p>Hello, </p>
+				<p>
+					We detected unusual activity on your account. Please verify your
+					credentials immediately to avoid suspension.
+				</p>
+				<a href="https://www.google.com/" class="phish-link" onclick="handlePhishClick(event)">
+					Verify Account
+				</a>
+				`,
+		footer: "Failure to act may result in permanent account lock.",
+		CorrectExplanation: `
+					<h3>Correct!</h3>
+					<p>
+					This email used urgency, a fake sender domain, and a malicious link. Very common phishing tactics.
+					</p>
+					<button onclick="nextMail()">Next Mail</button>`,
+		WrongExplanation: `
+					<h3>Wrong!</h3>
+					<p>
+					This email used urgency, a fake sender domain, and a malicious link. Very common phishing tactics.
+					</p>
+					<button onclick="nextMail()">Next Mail</button>`
+	}
+];
+
+	let currentMail = 0;
+
+	function showMail() {
+		document.getElementById("senderName").textContent = emails[currentMail].senderName;
+		document.getElementById("senderEmail").textContent = "<" + emails[currentMail].senderEmail + ">";
+		emailBody.innerHTML = emails[currentMail].body;
+		document.getElementById("emailFooter").textContent = emails[currentMail].footer;
+		phishResultCorrect.innerHTML = emails[currentMail].CorrectExplanation;
+		phishResultWrong.innerHTML = emails[currentMail].WrongExplanation;
+		}
+
+	function handlePhishClick(event) {
+		event.preventDefault();
+		alert("This was a phishing simulation! Never click suspicious links.");
+	}
+
+	
+	function correctAnswer(event) {
+		event.preventDefault();
+
+		document.getElementById("emailCard").style.display = "none";
+		document.getElementById("phishResultCorrect").classList.remove("hidden");
+		document.getElementById("phishResultWrong").classList.add("hidden");
+	}
+
+	function wrongAnswer(event) {
+		event.preventDefault();
+
+		document.getElementById("emailCard").style.display = "none";
+		document.getElementById("phishResultWrong").classList.remove("hidden");
+		document.getElementById("phishResultCorrect").classList.add("hidden");
+	}
+
+	function evaluateAnswer(event, answer) {
+		event.preventDefault();
+		document.getElementById("is-phish-button").disabled = true;
+		document.getElementById("is-not-phish-button").disabled = true;
+		
+		if (answer == emails[currentMail].status) {
+			correctAnswer(event);
+		}
+		else {
+			wrongAnswer(event);
+		}
+	}
+
+	function nextMail() {
+		document.getElementById("emailCard").style.display = "block";
+		document.getElementById("phishResultWrong").classList.add("hidden");
+		document.getElementById("phishResultCorrect").classList.add("hidden");
+		document.getElementById("is-phish-button").disabled = false;
+		document.getElementById("is-not-phish-button").disabled = false;
+
+		currentMail++
+		if (currentMail < emails.length) {
+			showMail()
+		}else {
+			document.querySelector(".phish-demo").innerHTML = `
+				<h2>Great job!</h2>
+				<p>You have completed the phishing simulation. Keep practicing to stay vigilant against real threats.</p>
+				<button class="logout-button" onclick="goToModules()">Back to Modules</button>
+			`;
+		}
+
+	}
+
+	// Starts here
+	showMail();
+</script>
+
+<script>
+    function goToAchievements() {
+        window.location.href = "{% url 'trainingModules:goToAchievements' %}";
+    }
+	function goToLeaderboard() {
+		window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
+	}
+	function goToModules() {
+		window.location.href = "{% url 'trainingModules:goToModules' %}";
+	}
+	function goToAdminDashboard() {
+		window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
+	}
+	function goToDashboard() {
+		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
+	}
+	function logout() {
+		window.location.href = "{% url 'login:logout' %}";
+	}
+</script>

@@ -1050,3 +1050,142 @@ input[type=number] {
 	gap: 10px;
 	grid-template-columns: repeat(1, 1fr);
 }
+
+.phish-demo {
+	text-align: center;
+	margin-top: 5rem;
+}
+
+.email-card {
+	background-color: var(--c-gray-700);
+	padding: 2rem;
+	border-radius: 10px;
+	max-width: 500px;
+	margin: 2rem auto;
+	text-align: left;
+	transition: 0.3s;
+}
+
+.email-header {
+	font-size: 0.9rem;
+	color: var(--c-text-tertiary);
+	margin-bottom: 1rem;
+}
+
+.email-body p {
+	margin-bottom: 1rem;
+}
+
+.phish-link {
+	display: inline-block;
+	background-color: var(--c-green-500);
+	color: black;
+	padding: 0.5rem 1rem;
+	border-radius: 5px;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.email-footer {
+	font-size: 0.85rem;
+	color: var(--c-text-tertiary);
+}
+
+.phish-result-wrong {
+	margin-top: 2rem;
+	background-color: #2e1f1f;
+	border: 1px solid #ff4d4d;
+	padding: 2rem;
+	border-radius: 10px;
+	max-width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.phish-result-correct {
+	margin-top: 2rem;
+	background-color: #1f2e1f;
+	border: 1px solid #4dff4d;
+	padding: 2rem;
+	border-radius: 10px;
+	max-width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.hidden {
+	display: none;
+}
+
+.phish-result button {
+	margin-top: 1rem;
+	padding: 0.5rem 1.5rem;
+	border: none;
+	background-color: var(--c-green-500);
+	cursor: pointer;
+	border-radius: 5px;
+}
+
+.is-phish-button {
+	width: 10%;
+	padding: 0.75rem;
+	background: linear-gradient(135deg, rgb(213, 56, 56), rgba(212, 112, 99, 0.877));
+	border: 0;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: 0.25s ease;
+	margin-top: 1rem;
+}
+
+.is-phish-button:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px rgba(69, 255, 188, 0.2);
+}
+
+.is-phish-button:focus {
+	outline: 0;
+	box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
+}
+.is-phish-button:disabled {
+	background-color: var(--c-gray-600);
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
+.is-not-phish-button {
+	width: 10%;
+	padding: 0.75rem;
+	background: linear-gradient(135deg, var(--c-green-500), var(--c-olive-500));
+	border: 0;
+	border-radius: 6px;
+	font-weight: 600;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: 0.25s ease;
+	margin-top: 1rem;
+}
+
+.is-not-phish-button:hover {
+	transform: translateY(-2px);
+	background-color: var(--c-gray-500);
+}
+
+.is-not-phish-button:focus {
+	outline: 0;
+	box-shadow: 0 0 0 2px var(--c-gray-800), 0 0 0 4px var(--c-gray-300);
+}
+
+.is-not-phish-button:disabled {
+	background-color: var(--c-gray-600);
+	cursor: not-allowed;
+	box-shadow: none;
+	transform: none;
+}
+
+
+
+
+

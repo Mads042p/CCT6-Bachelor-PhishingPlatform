@@ -35,7 +35,13 @@ def phishingExplained(request):
 
     return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})
 
+def emailTraining(request):
+    return render(request, 'trainingmodules/emailTraining.html')
+
 def updateUserScore(request):
+    '''
+    Receives a POST with JSON payload: "quizID", "score", "total"
+    '''
     if request.method == "POST":
         data = json.loads(request.body)
 
@@ -44,10 +50,12 @@ def updateUserScore(request):
         total = data.get("total")
         userID = request.session.get("userID")
         
+        # Calculate score to put in database, from 0 to 100
         score = int(score/total * 100)
 
         previousScore = getScore(userID, quizID)
         
+        # Either insert score into database if the quiz was completed for the first time, or update the score
         if not previousScore:
             upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
 

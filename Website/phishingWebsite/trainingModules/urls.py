@@ -11,5 +11,6 @@ urlpatterns = [
     path("goToAchievements/", views.goToAchievements, name="goToAchievements"),
     path("goToAdminDashboard/", views.goToAdminDashboard, name="goToAdminDashboard"),
     path("phishingExplained/", views.phishingExplained, name="phishingExplained"),
+    path("emailTraining/", views.emailTraining, name="emailTraining"),
     path("updateUserScore/", views.updateUserScore, name="updateUserScore"),
 ]

@@ -72,11 +72,13 @@
 		<div></div>
 	</div>
 </div>
+<!-- Embed quiz data as JSON in the template -->
 {{ quizData|json_script:"quiz-data" }}
 </body>
 </html>
 
 <script>
+	// Load quiz data from the template
 	const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
     console.log(quizData);
 
@@ -86,6 +88,7 @@
 	let currentQuestion = 0;
 	let score = 0;
 
+	// Function to display the current question and options
 	function showQuestion() {
 		const question = quizData[currentQuestion];
 		questionElement.innerText = question.question;
@@ -99,7 +102,7 @@
 			button.addEventListener("click", selectAnswer);
 		});
 	}
-
+	// Function to handle answer selection and provide feedback from the quiz data
 	function selectAnswer(e) {
 		const selectedButton = e.target;
 		const answer = quizData[currentQuestion].answer;
@@ -131,7 +134,7 @@ function showResult() {
 		showScore();
 	}
 }
-
+	// Function to display the final score and a button to return to the modules page, and send the score to the server
 	function showScore() {
 		quiz.innerHTML = `
     	<h1>Quiz Completed!</h1>

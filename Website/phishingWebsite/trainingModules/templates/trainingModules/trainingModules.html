@@ -61,15 +61,24 @@
 	</header>
     <div class="app-body">
         <div></div>
-        <div>
-            <h1>Training Modules</h1>
-            <h3>How to get phished</h3>
-            <h3>How to phish other people</h3>
-            <h3>... Profit!</h3>
-			<a href="{% url 'trainingModules:phishingExplained' %}">
-					What is Phishing?
-				</a>
-        </div>
+		<div>
+			<h1>Training Modules</h1>
+			<h3>How to get phished</h3>
+			<h3>How to phish other people</h3>
+			<h3>... Profit!</h3>
+			<ul>
+				<li>
+					<a href="{% url 'trainingModules:phishingExplained' %}">
+						What is Phishing?
+					</a>
+				</li>
+				<li>
+					<a href="{% url 'trainingModules:emailTraining' %}">
+						Email Training
+					</a>
+				</li>
+			</ul>
+		</div>
         <div></div>
     </div>
 </div>
