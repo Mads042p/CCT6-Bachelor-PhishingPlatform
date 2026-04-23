@@ -84,6 +84,57 @@
 			font-size: 0.9rem;
 		}
 
+		.newsletter {
+			text-align: center;
+			margin-top: 4rem;
+			padding: 2rem;
+			background-color: var(--c-gray-700);
+			border-radius: 10px;
+		}
+
+		.newsletter h2 {
+			margin-bottom: 1rem;
+		}
+
+		.newsletter p {
+			color: var(--c-text-tertiary);
+			margin-bottom: 2rem;
+		}
+
+		.newsletter form {
+			display: flex;
+			justify-content: center;
+			gap: 1rem;
+			flex-wrap: wrap;
+		}
+
+		.newsletter input {
+			padding: 0.75rem;
+			border: 1px solid var(--c-gray-500);
+			border-radius: 6px;
+			background-color: var(--c-gray-800);
+			color: var(--c-text-primary);
+			flex: 1;
+			min-width: 200px;
+		}
+
+		.newsletter button {
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			background-color: var(--c-green-500);
+			color: var(--c-gray-900);
+			border: none;
+			font-weight: 500;
+			cursor: pointer;
+		}
+
+		@media (max-width: 600px) {
+			.newsletter form {
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
 		@media (max-width: 900px) {
 			.features {
 				grid-template-columns: 1fr;
@@ -156,6 +207,16 @@
 				across your organization.
 			</p>
 		</div>
+	</section>
+
+	<section class="newsletter">
+		<h2>Try getting phished!</h2>
+		<p>Subscribe to our phishing-letter to get occasional phishing simulations.</p>
+		<form action="{% url 'landingPage:newsletter' %}" method="post">
+			{% csrf_token %}
+			<input type="email" name="email" placeholder="Enter your email address" required>
+			<button type="submit">Subscribe</button>
+		</form>
 	</section>
 
 	<div class="footer-landing">
