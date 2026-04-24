@@ -10,15 +10,38 @@ def cursorConnect():
     
 # Command for inserting new data into the database.
 def insertData(table_name, data):
+    """Inserts data into the specified table securely using parameterized queries."""
+
     conn, cursor = cursorConnect()
 
-    """Inserts data into the specified table securely using parameterized queries."""
     columns = ", ".join(data.keys())
     # Make the input from the user to a paremterized quiery using variabels.
     placeholders = ", ".join(["?" for _ in data])
     values = tuple(data.values())
     query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
     cursor.execute(query, values)
+    conn.commit()
+    conn.close()
+
+
+def insertUserData(table_name, data):
+    """Inserts user data into the specified table. If someone is the first to register with a company, they will be made admin. If not, they will be made a regular user."""
+
+    conn, cursor = cursorConnect()
+
+    columns = ", ".join(data.keys())
+    # Make the input from the user to a paremterized quiery using variabels.
+    placeholders = ", ".join(["?" for _ in data])
+    values = tuple(data.values())
+    query = f"""INSERT INTO {table_name} ({columns}, isAdmin) 
+                VALUES ({placeholders}, 
+                    CASE
+                        WHEN EXISTS (SELECT 1 FROM {table_name} WHERE Company = ?)
+                        THEN 0
+                        ELSE 1
+                    END
+                )"""
+    cursor.execute(query, (*values, data.get("company")))
     conn.commit()
     conn.close()
     

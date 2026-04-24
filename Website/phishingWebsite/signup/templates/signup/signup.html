@@ -35,11 +35,6 @@
                     <input type="text" id="company" name="company" placeholder="Company code (optional)">
                 </div>
 
-                <!-- REMOVE MAYBE? REMOVE ENTIRE DIV IF ADMIN CHECK REMOVES -->
-                <div class="form-group">
-                    <label for="isAdmin"><em>Is Admin?</em></label>
-                    <input type="checkbox" id="isAdmin" name="isAdmin">
-                </div>
 
                 <button type="button" class="login-button" onclick="createUser()"><em>Sign up</em></button>
                 <br>
@@ -84,7 +79,6 @@ async function createUser() {
                 const password = sanitize(document.getElementById('password').value);
                 const name = sanitize(document.getElementById('name').value);
                 const company = sanitize(document.getElementById('company').value);
-                const isAdmin = document.getElementById('isAdmin').checked;
 
                 if (!email || !password || !name) {
                     alert("All fields are required.");
@@ -103,7 +97,6 @@ async function createUser() {
                 formData.append('password', hashedPassword);
                 formData.append('name', name);
                 formData.append('company', company);
-                formData.append('isAdmin', isAdmin);
                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
                 fetch("{% url 'signup:goToDashboard' %}", {

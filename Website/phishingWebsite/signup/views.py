@@ -16,25 +16,19 @@ def goToDashboard(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         company = request.POST.get("company")
-        isAdmin = request.POST.get("isAdmin")
         
-        if isAdmin == "true":
-            isAdmin = 1
-        else:
-            isAdmin = 0
         
-        print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}")
+        print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}")
 
         data = {
             "name": name, 
             "email": email, 
             "password": password, 
-            "company": company, 
-            "isAdmin": isAdmin
+            "company": company
             }
         
         print("type is: ", type(data))
-        insertData(tableName, data)
+        insertUserData(tableName, data)
         
     
         return redirect('login:index')
