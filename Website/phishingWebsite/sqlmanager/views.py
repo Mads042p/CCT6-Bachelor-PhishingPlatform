@@ -120,3 +120,26 @@ def getScore(UserID, SourceID):
     conn.close()
 
     return result[0] if result else None
+
+def getUserCompanyScores(email):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()
+    
+    query = """SELECT u.Email AS UserEmail, u.Name, SUM(up.Score) AS TotalScore
+               FROM UserData u 
+               JOIN UserPoints up ON u.ID = up.UserID
+               WHERE u.Company = (SELECT Company FROM UserData WHERE Email = ?)
+               GROUP BY u.Email, u.Name;"""
+    
+    cursor.execute(query, (email,))
+    result = cursor.fetchall()
+    conn.close()
+    
+    # Convert into JSON
+    leaderboard_data = [
+        {"name": row[1], "points": row[2]}  # row = (Email, Name, Score)
+        for row in result
+    ]
+
+    print(leaderboard_data)
+    return leaderboard_data
