@@ -38,6 +38,9 @@ def phishingExplained(request):
 def emailTraining(request):
     return render(request, 'trainingmodules/emailTraining.html')
 
+def staticTraining(request):
+    return render(request, 'trainingModules/staticTraining.html')
+
 def updateUserScore(request):
     '''
     Receives a POST with JSON payload: "quizID", "score", "total"
