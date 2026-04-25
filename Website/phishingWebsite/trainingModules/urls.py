@@ -13,4 +13,5 @@ urlpatterns = [
     path("phishingExplained/", views.phishingExplained, name="phishingExplained"),
     path("emailTraining/", views.emailTraining, name="emailTraining"),
     path("updateUserScore/", views.updateUserScore, name="updateUserScore"),
+    path("staticTraining/", views.staticTraining, name="staticTraining"),
 ]

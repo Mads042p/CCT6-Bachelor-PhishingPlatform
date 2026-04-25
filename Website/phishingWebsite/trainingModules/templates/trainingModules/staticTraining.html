@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Training Modules</title>
+	<title>Achievements</title>
 	<link rel="stylesheet" href="{% static 'base.css' %}">
 	<style>
 		.user-profile {
@@ -61,29 +61,17 @@
 	</header>
     <div class="app-body">
         <div></div>
-		<div>
-			<h1>Training Modules</h1>
-			<h3>How to get phished</h3>
-			<h3>How to phish other people</h3>
-			<h3>... Profit!</h3>
-			<ul>
-				<li>
-					<a href="{% url 'trainingModules:phishingExplained' %}">
-						Try a quiz
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'trainingModules:emailTraining' %}">
-						Email Training
-					</a>
-				</li>
-				<li>
-					<a href="{% url 'trainingModules:staticTraining' %}">
-						Static Training
-					</a>
-				</li>
-			</ul>
-		</div>
+        <div>
+            <h1>What is Phishing?</h1>
+
+            <p>Chances are that if you’ve ever been on the internet, someone has tried to trick you with a phishing attack. 
+            Phishing attacks might be the most common way for a malicious actor to execute their attack, targeting individuals, 
+            large organizations, governments, and companies alike.</p>
+
+            <h2>What is phishing? </h2>
+
+            <p>Phishing is quite simply the act of trying to get you to click on a link or download a file that you do not know. It could be a link to your bank, that has been slightly changed, so that it looks like what you already know. Usually, attacks will try to make their request time-sensitive to put the part of your brain that controls the rational thinking out of the battle. This is known as “Amygdala Hijack” and will make you act entirely on emotion rather than rational thinking. The attackers try to get the victim, you in this case, to think “Crap, I need to do something NOW, otherwise something bad happens”. This could be that a package that you’ve been waiting for a long time for does not clear customs because you didn't pay or that you miss out on a huge financial gain because you responded too slow.  </p>
+        </div>  
         <div></div>
     </div>
 </div>
@@ -93,19 +81,19 @@
 
 <script>
     function goToAchievements() {
-        window.location.href = "{% url 'trainingModules:goToAchievements' %}";
+        window.location.href = "{% url 'achievements:goToAchievements' %}";
     }
 	function goToLeaderboard() {
-		window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
+		window.location.href = "{% url 'achievements:goToLeaderboard' %}";
 	}
 	function goToModules() {
-		window.location.href = "{% url 'trainingModules:goToModules' %}";
+		window.location.href = "{% url 'achievements:goToModules' %}";
 	}
 	function goToAdminDashboard() {
-		window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
+		window.location.href = "{% url 'achievements:goToAdminDashboard' %}";
 	}
 	function goToDashboard() {
-		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
+		window.location.href = "{% url 'achievements:goToDashboard' %}";
 	}
 	function logout() {
 		window.location.href = "{% url 'login:logout' %}";
