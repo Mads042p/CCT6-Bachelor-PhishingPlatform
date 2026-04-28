@@ -6,6 +6,7 @@ from sqlmanager.views import *
 def achievements(request):
     # Get User ID from session cookie
     userID = request.session.get("userID")
+    assignAchievements(userID)
     
     if not userID:
         return redirect('login:index')
@@ -59,3 +60,9 @@ def goToModules(request):
     
 def goToAchievements(request):
     return redirect('achievements:achievements')
+
+def assignAchievements(userID):
+    achTrainingComplete(userID)
+    achAPlusStudent(userID)
+    achTheGameIsAfoot(userID)
+    achMaster(userID)

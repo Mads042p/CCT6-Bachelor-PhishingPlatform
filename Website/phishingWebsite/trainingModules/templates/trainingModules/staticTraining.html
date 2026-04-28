@@ -1,0 +1,175 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Achievements</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="#" onclick="goToAchievements()">
+					Achievements
+				</a>
+				<a href="#" onclick="goToLeaderboard()">
+					Leaderboard
+				</a>
+				<a href="#" onclick="goToModules()">
+					Training Modules
+				</a>
+				<a href="#" onclick="goToAdminDashboard()">
+					Admin Dashboard
+				</a>
+			</div>
+		</div>
+		<div class="app-header-actions">
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
+		</div>
+		<div class="app-header-mobile">
+			<button class="icon-button large">
+				<i class="ph-list"></i>
+			</button>
+		</div>
+
+	</header>
+    <div class="app-body">
+        <div></div>
+        <div>
+            <h1>What is Phishing?</h1>
+
+            <p>Chances are that if you’ve ever been on the internet, someone has tried to trick you with a phishing attack. 
+            Phishing attacks might be the most common way for a malicious actor to execute their attack, targeting individuals, 
+            large organizations, governments, and companies alike.</p>
+
+            <h3>What is phishing? </h3>
+
+            <p>Phishing is quite simply the act of trying to get you to click on a link or download a file that you do not know. It could be a link to your bank, that has been slightly changed, so that it looks like what you already know. Usually, attacks will try to make their request time-sensitive to put the part of your brain that controls the rational thinking out of the battle. This is known as “Amygdala Hijack” and will make you act entirely on emotion rather than rational thinking. The attackers try to get the victim, you in this case, to think “Crap, I need to do something NOW, otherwise something bad happens”. This could be that a package that you’ve been waiting for a long time for does not clear customs because you didn't pay or that you miss out on a huge financial gain because you responded too slow.  </p>
+			
+			<h3>Why is it called phishing?</h3>
+
+			<p>This is how they get you and why the entire concept is called phishing. The attacker is usually trying to steal your personal information while, as we stated before, masquerading as a reputable source with some form of request. This lures the victim in and gives the attacker an opportunity to trick them, similar to how a fisherman uses bait to catch a fish – hence the name “phishing”. </p>
+			
+			<h3>Why do the attacks keep showing up? </h3>
+
+			<p>Most of us are already, without training, good at spotting the most common form of phishing attacks. Some attacks are done to thousands or even millions of people in one shift go. The attacker does not need everyone to fall for it, even though they would probably like everyone to, in order for the attack to be successful. Emails are fairly easy to get a hold of, since we tend to share our email often, by signing up to different types of stuff, and not regard it as personal information, at least we don't typically treat it as such... </p>
+
+			<p>Emails are also cheap both to send and produce, especially since you just need one to send to everyone. But sometimes these “shotgun approach” attempts work, otherwise we would never see them.  </p>
+
+			<p>Another approach, that is the opposite to the “shotgun approach” is a technique called “Spear Phishing”. This is when the attacker crafts ultra-specific phishing emails to a very specific group of people to make the attack more effective. “Spear Phishing” is very expensive compared to the “shotgun approach” since they almost always need to be made by a human and require some type of personal information in order for the email look real.  </p>
+
+			<h3>How do you spot and defend against phishing? </h3>
+
+			<p>Sometimes you don't have a package that needs to clear customs or you for sure know that you don't have a rich uncle in Nigeria who wants to give you a bunch of money – but sometimes you do. How do you defend against, and spot these malicious actors and emails?</p>
+
+			<p>Well, phishing is super difficult to defend against. This is why the attacks are still very common. The Danish Centre for Cyber Security (CFCS) deems the general threat of cyber security attacks as “Very High”, both for normal citizens and companies/organizations.  But if the attacks were as easy to spots as asking yourself “Do I have a Nigerian Uncle with a bunch of money?” or “Do I have a package, which has been stopped by customs, and do they expect me to pay 2.32 euros?” phishing would be a dying race. Unfortunately, this is not the case. The attackers have gotten more sophisticated and have, for some time, started using another cyber security term called “Spoofing”.  </p>
+
+			<h3>What is spoofing? </h3>
+
+			<p>“What is “Spoofing”?” you might ask. Spoofing is often used in conjunction with phishing and does look a bit similar, but it's not the exact same. As we’ve covered, phishing is the act of making someone untrustworthy look trustworthy, spoofing is used to keep the attacker looking trustworthy, even after a quick peek under the hood. Spoofing is making a URL (internet address), email address or other names look like a reputable source. Spoofing could be changing a single letter in a link, changing it to different link or something third making it different from its original state. </p>
+
+			<h2>Tricks to spot phishing</h2>
+
+			<p>When we are trying to spot whether an email is phishing or legit, there’s a couple of things we should look at. This is our recommended order, but do them as your please, until you are happy with the result. </p>
+
+			<ol>
+				<li>
+					Read the email and look for clues. Ask yourself:
+					<ol type="i">
+						<li>“Did I just order a package, which will be delivered with UPS and not GLS? Did I import anything that could reasonably be held up in customs?”</li>
+						<li>“Is this too good to be true? Is someone offering me 10,000 USD without any downside?”</li>
+					</ol>
+					<br>
+					In other words: Use your best judgement. If the email is too good to be true or if something feels off, delete it. If the email has caught your attention and still seems both interesting and/or relevant, move on to step 2. 
+				</li>
+				<br>
+				<li>
+					In this step we take a look at the information presented in the email, more specifically the address and name of the sender. Addresses, especially in organizations and/or companies all follow the same structure and can therefore easily be identified. Let’s say we had an email from Apple; a legit email address would probably look a lot like this: “TonyAdam@Apple.com”. What attackers would do, to cheat the victim, is to change the address a bit. Enough to be noticeable if you look for it, but blend in and look normal if you don't. An example of a fake email would be “TonyAdam@Aple.com. Attackers cannot gain the legitimate “Apple” since this is protected by the company Apple and only given to legitimate employees. This means, that if you know an address, there is a higher chance you can trust the content of the email. But addresses can be difficult to keep track of and does look way more complicated in the real world. A good rule of thumb is: If you are unsure about an address, look it up.  
+				</li>
+				<br>
+				<li>
+					As a third, and final step, we would check the links of the email. “But what if there’s no links in the email?”, you might ask. And to this our answer would be, if there’s nothing to open or download, then this email is safe. Just remember to never send personal information via email. If the email has a link, we recommend that you check the link by hovering over it. Be careful that you don't press it! An example of this could be changing a "o" in Google to a "0", like changing www.google.com to www.go0gle.com. Even though these look similar, they lead to very different places, only one of which is safe and legitimate. Another tell-tell sign that a link might not be what it says it is, is if its shortened. For example, the URL http://www.facebook.com/JohnJohnson will take the user directly to John Johnson’s Facebook profile. Since the root of the URL and the extension are both legitimate, the URL can be considered legitimate. What some scammers do is take a URL, which is redirecting to a malicious website, and change it to an unreadable URL. In this example, the URL http://www.facebook.com/JohnJohnson has been changed to https://tinyurl.com/3sk4daj4, the second URL providing no information to the user other than that the original URL has been changed. 
+				</li>
+			</ol>
+
+			<h2>Examples</h2>
+
+			<p>Okay, now that we understand the basics. Let’s look at some examples:</p>
+
+			<p>These emails are gathered from one of our personal inboxes, which is why the receiver is redacted and some text is in Danish. But they are still good examples.</p>
+
+			<p>Let’s try to apply the three rules to these emails and see if we can classify them as phishing, even though we know that they are.</p>
+
+			<img src="{% static 'media/example-1.png' %}">
+
+			<p>We start by taking a look at the content of the email. The email tries to trick us into thinking that they are from Apple Support and that they want me to transfer them 690 NT (Taiwanese dollars). Since I don't read Chinese, I cannot determine what they want me to pay for exactly. But since I know that I have no subscriptions or anything else to do with anyone from China, I can safely delete this and classify it as phishing. </p>
+
+			<img src="{% static 'media/example-2.png' %}">
+
+			<p>This email is pretending to be an email from the Danish health authority, more specifically from the branch that handles medicine, prescriptions and such. If you’re not Danish, you might not know what “sundhed.dk” is, but if you are, you do. Anyway, the Danish health insurance card never expires. The only reason why anyone would get a new one would be if it's lost, damaged or if the recipient has moved.</p>
+
+			<p>Well, let’s see why this email is phishing. We start by looking at the content. This, obviously, looks a bit off if you’re not Danish but if you are it all looks pretty legit. The only thing that would give the contents of this email away would be the fact that the card never needs to be renewed... </p>
+
+			<p>Let’s use the second rule now; we look at the address of the sender. This does say “sundhed.DK”, but right after it reveals the true address of the sender “luzna.zuzana@loveofraw.com”, and now we need to ask ourselves: “Why would the Danish health authorities ever send me an email like this, from a personal email?”. This seems pretty suspicions already, but the last nail in the coffin would be that we in Denmark mostly receive official mail from the health authorities in “Eboks.dk”.  </p>
+
+			<p>Let's say that all of this was not reason enough to classify the email as phishing and that we are still unsure. Let's take a look at the links in the email (This is done by hovering over any pictures or buttons in the email; this reveals their links without ever clicking on them and them being a threat.): </p>
+
+			<img src="{% static 'media/example-3.png' %}">
+
+			<p>This link reveals quite a lot about where the button wants to take us. For reference, if you are trying to access the real sundhed.dk website, the link looks like this: “https://www.sundhed.dk/”. The main difference here is the first part of the link,  the “intechopen.com” part. We do not know what this is, but its for sure not sundhed.dk, its something else. Its most likely a website, that looks like the real sundehed.dk, which is trying to steal your personal information. If we were to click the link, assuming that we belive its real, we would most likely enter our social secutiy details or “mitID” details into the website, which the attackers would steal.</p>
+
+			<p>We can now, without a shadow of doubt, classify this email as phishing and delete it! </p>
+		</div>  
+        <div></div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script>
+    function goToAchievements() {
+        window.location.href = "{% url 'achievements:goToAchievements' %}";
+    }
+	function goToLeaderboard() {
+		window.location.href = "{% url 'achievements:goToLeaderboard' %}";
+	}
+	function goToModules() {
+		window.location.href = "{% url 'achievements:goToModules' %}";
+	}
+	function goToAdminDashboard() {
+		window.location.href = "{% url 'achievements:goToAdminDashboard' %}";
+	}
+	function goToDashboard() {
+		window.location.href = "{% url 'achievements:goToDashboard' %}";
+	}
+	function logout() {
+		window.location.href = "{% url 'login:logout' %}";
+	}
+</script>

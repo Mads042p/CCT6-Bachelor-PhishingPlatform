@@ -7,6 +7,99 @@
 	<title>Leaderboard</title>
 	<link rel="stylesheet" href="{% static 'base.css' %}">
 	<style>
+		.leaderboard-shell {
+			max-width: 760px;
+			margin: 0 auto;
+			padding: 2rem 0 0;
+		}
+
+		.leaderboard-card {
+			background: linear-gradient(180deg, rgba(69, 255, 188, 0.08), rgba(255, 255, 255, 0.02));
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			border-radius: 24px;
+			padding: 1.5rem;
+			box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+		}
+
+		.leaderboard-header {
+			display: flex;
+			justify-content: space-between;
+			gap: 1rem;
+			align-items: end;
+			margin-bottom: 1.5rem;
+		}
+
+		.leaderboard-header h1 {
+			margin: 0;
+			font-size: 2.4rem;
+		}
+
+		.leaderboard-header p {
+			margin: 0.35rem 0 0;
+			color: var(--c-text-tertiary);
+		}
+
+		.leaderboard-list {
+			display: grid;
+			gap: 0.85rem;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.leaderboard-item {
+			display: grid;
+			grid-template-columns: 72px 1fr auto;
+			align-items: center;
+			gap: 1rem;
+			padding: 1rem 1.1rem;
+			border-radius: 18px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.leaderboard-rank {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 56px;
+			height: 56px;
+			border-radius: 18px;
+			background: rgba(69, 255, 188, 0.12);
+			color: var(--c-white);
+			font-size: 1.15rem;
+			font-weight: 700;
+		}
+
+		.leaderboard-name {
+			font-size: 1.05rem;
+			font-weight: 600;
+		}
+
+		.leaderboard-points {
+			color: var(--c-green-500);
+			font-weight: 700;
+			font-size: 1.05rem;
+		}
+
+		.leaderboard-empty {
+			padding: 1.5rem;
+			border-radius: 18px;
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--c-text-tertiary);
+		}
+
+		@media (max-width: 700px) {
+			.leaderboard-header,
+			.leaderboard-item {
+				grid-template-columns: 1fr;
+			}
+
+			.leaderboard-item {
+				justify-items: start;
+			}
+		}
+
 		.user-profile {
 			display: flex;
 			align-items: center;
@@ -61,10 +154,20 @@
 	</header>
     <div class="app-body">
         <div></div>
-        <div>
-            <h1>Leaderboard</h1>
-            <h3>1. Leauge of Legends</h3>
-            <h3>10038. Formel 2</h3>
+		<div class="leaderboard-shell">
+			<div class="leaderboard-card">
+				<div class="leaderboard-header">
+					<div>
+						<h1>Leaderboard</h1>
+						<p></p>
+					</div>
+				</div>
+
+				<script id="leaderboard-data" type="application/json">{{ leaderboard_data_json|safe }}</script>
+
+				<ol class="leaderboard-list" id="leaderboard-list"></ol>
+				<div class="leaderboard-empty" id="leaderboard-empty" hidden>No leaderboard entries available.</div>
+			</div>
         </div>
         <div></div>
     </div>
@@ -92,4 +195,24 @@
 	function logout() {
 		window.location.href = "{% url 'login:logout' %}";
 	}
+	// Gets the leaderboard data and post its into the website.
+	const leaderboardDataElement = document.getElementById('leaderboard-data');
+	const leaderboardList = document.getElementById('leaderboard-list');
+	const leaderboardEmpty = document.getElementById('leaderboard-empty');
+	const leaderboardData = leaderboardDataElement ? JSON.parse(leaderboardDataElement.textContent || '[]') : [];
+
+	if (!leaderboardData.length) {
+		leaderboardEmpty.hidden = false;
+	} else {
+		leaderboardList.innerHTML = leaderboardData.map((entry, index) => `
+			<li class="leaderboard-item">
+				<span class="leaderboard-rank">${index + 1}</span>
+				<span class="leaderboard-name">${entry.name}</span>
+				<span class="leaderboard-points">${entry.points} points</span>
+			</li>
+		`).join('');
+	}
+
+	
+
 </script>

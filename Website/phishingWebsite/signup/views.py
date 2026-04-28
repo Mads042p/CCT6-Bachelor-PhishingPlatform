@@ -4,10 +4,11 @@ from django.contrib.auth.hashers import make_password
 from sqlmanager.views import *
 
 
-# Create your views here.
 def signup(request):
     return render(request, 'signup/signup.html')
 
+# Receives the userdata from the front-end, and posts them into the database
+# using the insertUserData function from the SQL-manager.
 def goToDashboard(request):
     tableName = 'UserData'
 
@@ -16,34 +17,26 @@ def goToDashboard(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         company = request.POST.get("company")
-        isAdmin = request.POST.get("isAdmin")
         
-        if isAdmin == "true":
-            isAdmin = 1
-        else:
-            isAdmin = 0
         
-        print(f"Name: {name}, Email: {email}, Password: {password}, Company: {company}, isAdmin: {isAdmin}")
-
         data = {
             "name": name, 
             "email": email, 
             "password": password, 
-            "company": company, 
-            "isAdmin": isAdmin
+            "company": company
             }
         
-        print("type is: ", type(data))
-        insertData(tableName, data)
+        insertUserData(tableName, data)
         
     
         return redirect('login:index')
     return render(request, 'login/loginPage.html')
 
-
+# Renderes the companycreation page, if the button is clicked.
 def companyCreation(request):
     return render(request, 'signup/companyCreation.html')
 
+# Creates the company in the database and inserts the company information into the db.
 def createCompany(request):
     if request.method == "POST":
         companyName = request.POST.get("companyName")
@@ -51,7 +44,6 @@ def createCompany(request):
         companyCode = request.POST.get("companyCode")
         iv = request.POST.get("iv")
         CVRNumber = request.POST.get("CVRNumber")
-        print(f"Company Name: {companyName}, Encrypted Email: {encryptedEmail}, companyCode: {companyCode}, IV: {iv}")
         
         insertData("CompanyTable", {
             "CompanyName": companyName,

@@ -77,15 +77,14 @@
 </html>
 
 <script>
+	// Get the and quiz data and initialize the score 
 	const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
-    console.log(quizData);
-
 	const questionElement = document.getElementById("question");
 	const optionsElement = document.getElementById("options");	
-
 	let currentQuestion = 0;
 	let score = 0;
 
+	// Function to rendering the current quiz question and its answer options into the UI
 	function showQuestion() {
 		const question = quizData[currentQuestion];
 		questionElement.innerText = question.question;
@@ -100,6 +99,7 @@
 		});
 	}
 
+	//Function that updates the quiz, checks what the user answered and updates the score.
 	function selectAnswer(e) {
 		const selectedButton = e.target;
 		const answer = quizData[currentQuestion].answer;

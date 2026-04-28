@@ -1185,7 +1185,42 @@ input[type=number] {
 	transform: none;
 }
 
+.training-card-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+}
 
+.training-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
 
+.training-card a {
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #1ecf11, #036521);
+    padding: 20px;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+.training-card a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
 
+.training-card-content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.training-card-content p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}

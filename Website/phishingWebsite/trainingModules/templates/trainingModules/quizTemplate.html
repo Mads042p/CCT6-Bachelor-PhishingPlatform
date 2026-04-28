@@ -125,6 +125,7 @@
 		nextButton.addEventListener("click", showResult);
 	}
 
+//Only show th score, when the quiz is finished
 function showResult() {
 	currentQuestion++;
 
@@ -164,7 +165,9 @@ function showResult() {
 	showQuestion();
 </script>
 
+
 <script>
+	// Buttons that redirects to other sites.
     function goToAchievements() {
         window.location.href = "{% url 'trainingModules:goToAchievements' %}";
     }

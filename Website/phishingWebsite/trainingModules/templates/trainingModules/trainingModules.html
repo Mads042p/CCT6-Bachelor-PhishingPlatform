@@ -63,20 +63,33 @@
         <div></div>
 		<div>
 			<h1>Training Modules</h1>
-			<h3>How to get phished</h3>
-			<h3>How to phish other people</h3>
-			<h3>... Profit!</h3>
-			<ul>
-				<li>
+			<ul class="training-card-list">
+				<li class="training-card">
+					<a href="{% url 'trainingModules:staticTraining' %}">
+						<div class="training-card-content">
+							<h3>Phishing</h3>
+							<p>Learn what phishing is</p>
+						</div>
+					</a>
+				</li>
+				<li class="training-card">
 					<a href="{% url 'trainingModules:phishingExplained' %}">
-						What is Phishing?
+						<div class="training-card-content">
+							<h3>Phishing Quiz</h3>
+							<p>Test your phishing knowledge</p>
+						</div>
 					</a>
 				</li>
-				<li>
+		
+				<li class="training-card">
 					<a href="{% url 'trainingModules:emailTraining' %}">
-						Email Training
+						<div class="training-card-content">
+							<h3>Email Training</h3>
+							<p>Try to identify phishing emails</p>
+						</div>
 					</a>
 				</li>
+		
 			</ul>
 		</div>
         <div></div>

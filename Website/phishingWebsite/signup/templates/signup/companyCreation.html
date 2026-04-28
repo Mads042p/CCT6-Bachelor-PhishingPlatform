@@ -69,22 +69,21 @@
             return string.replace(reg, (match)=>(map[match]));
         }
         
-        
+        // Function to create a unique company code for each company.
         async function createCompanyCode(){
             
             const company = document.getElementById("companyName").value;
             const email = document.getElementById("adminEmail").value;
+            // Creates the code by taking the 4 first letters in the company plus a random number from 1000-9999
             const companyCode = company.slice(0, 4) + Math.floor(1000 + Math.random()*9000);
             const CVRNumber = document.getElementById("CVRnr").value;
+            // Awaits the key and the encrypted email
             const derivedKey = await deriveKey(email, companyCode);
             const encryptedEmail = await encryptData(email, derivedKey);
-            console.log("encryptedEmail:", encryptedEmail);
 
             const hex = Array.from(encryptedEmail.encryptedData)
                 .map(b => b.toString(16).padStart(2, "0"))
                     .join("");
-
-                console.log(hex);
             
             const decrypted = await decryptMessage(
                 derivedKey,
@@ -92,7 +91,6 @@
                 encryptedEmail.iv
             );
             const decoder = new TextDecoder("utf-8");
-            console.log("decryptedEmail:", decoder.decode(decrypted));
 
             const formData = new FormData();
             formData.append('companyCode', companyCode);
@@ -143,9 +141,8 @@
             
         }
 
-        
+        // Creates an encryptionkey using the company email and the companycode as a salt.
         function deriveKey(Email, companyCode) {
-            console.log("email:", Email, "companyCode:", companyCode);
             const encoder = new TextEncoder();
             const salt = encoder.encode(companyCode);
             const iterations = 10000;
@@ -172,7 +169,7 @@
             });
         }
         
-
+        // Encrypts the email using the key.
         async function encryptData(data, key) {
             const encoder = new TextEncoder();
             const iv = window.crypto.getRandomValues(new Uint8Array(12));
@@ -187,7 +184,7 @@
                 return { encryptedData: new Uint8Array(encrypted), iv: iv };
             });
         }
-
+        // Decrypts the email using the key and the iv.
         async function decryptMessage(key, ciphertext, iv) {
             // The iv value is the same as that used for encryption
         return window.crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ciphertext);
