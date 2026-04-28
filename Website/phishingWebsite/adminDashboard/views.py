@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from sqlmanager.views import *
+from django.http import HttpResponseForbidden
 
 def adminDashboard(request):
-    userID = request.session.get("userID")
+    isAdmin = request.session.get("isAdmin")
+    print(isAdmin)
     
-    if not userID:
-        return redirect('login:index')
-    # Hard-coded company
+    if not isAdmin:
+        return HttpResponseForbidden("Admins only")
+
     company = request.session.get("company")
 
     rows = getEmployees(company)
