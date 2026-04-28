@@ -167,6 +167,19 @@ def getUserCompanyScores(email):
     print(leaderboard_data)
     return leaderboard_data
 
+def getCompany(companyCode):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""SELECT CompanyName 
+                FROM CompanyTable 
+                WHERE CompanyCode = ?"""
+    cursor.execute(query, (companyCode,))
+    conn.commit()
+    result = cursor.fetchone()
+    conn.close()
+
+    return result[0] if result else None
+
 # ---------------- INDIVIDUAL ACHIEVEMENTS ----------------
 
 def achTrainingComplete(UserID):
