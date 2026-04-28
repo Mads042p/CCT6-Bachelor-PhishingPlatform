@@ -195,7 +195,7 @@
 	function logout() {
 		window.location.href = "{% url 'login:logout' %}";
 	}
-
+	// Gets the leaderboard data and post its into the website.
 	const leaderboardDataElement = document.getElementById('leaderboard-data');
 	const leaderboardList = document.getElementById('leaderboard-list');
 	const leaderboardEmpty = document.getElementById('leaderboard-empty');

@@ -2,6 +2,7 @@ from django.shortcuts import render
 import sqlite3
 import json
 
+# Establish the connection to the db
 def cursorConnect():
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()
@@ -45,6 +46,7 @@ def insertUserData(table_name, data):
     conn.commit()
     conn.close()
     
+# Gets the data from the table "UserData"
 
 def GetData(tableName):
     conn, cursor = cursorConnect()
@@ -54,6 +56,7 @@ def GetData(tableName):
     conn.close()
     return result
 
+# Deletes data from the "UserData" database.
 def DeleteData(tableName, email):
     conn, cursor = cursorConnect()
     query = f"DELETE FROM {tableName} WHERE Email = ?;"
@@ -61,7 +64,7 @@ def DeleteData(tableName, email):
     conn.commit()
     conn.close()
     
-    
+# Gets the hashed password from the database, which is used for authentication. 
 def getHashedPassword(tableName, email):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
@@ -72,7 +75,8 @@ def getHashedPassword(tableName, email):
     conn.close()
 
     return x 
-    
+
+# A function to get the achivements from the "achivements" table in the db.
 def getUserAchievements(UserID):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
@@ -88,6 +92,7 @@ def getUserAchievements(UserID):
 
     return result
 
+# Returns all users in the same company, searching the db using their company info
 def getEmployees(company):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
@@ -101,6 +106,7 @@ def getEmployees(company):
 
     return result
 
+# Fetches all questions for a given quizID from the db. 
 def getQuiz(quizID):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
@@ -118,6 +124,7 @@ def getQuiz(quizID):
 
     return quiz_list
 
+# Updates the score in the db
 def upsertScore(UserID, SourceID, Score, DateTaken):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
@@ -164,81 +171,4 @@ def getUserCompanyScores(email):
         for row in result
     ]
 
-    print(leaderboard_data)
     return leaderboard_data
-
-def getCompany(companyCode):
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()    
-    query = f"""SELECT CompanyName 
-                FROM CompanyTable 
-                WHERE CompanyCode = ?"""
-    cursor.execute(query, (companyCode,))
-    conn.commit()
-    result = cursor.fetchone()
-    conn.close()
-
-    return result[0] if result else None
-
-# ---------------- INDIVIDUAL ACHIEVEMENTS ----------------
-
-def achTrainingComplete(UserID):
-    """Achievement: Complete all training courses"""
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()    
-    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
-                SELECT :uid, 1
-                WHERE (
-	                (SELECT COUNT(DISTINCT QuizID) FROM Quiz) = 
-	                (SELECT COUNT(DISTINCT SourceID) FROM UserPoints WHERE UserID = :uid))"""
-    cursor.execute(query, {"uid": UserID})
-    conn.commit()
-    conn.close()
-
-def achAPlusStudent(UserID):
-    """Achievement: Complete all training courses with 100% accuracy"""
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()    
-    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
-                SELECT :uid, 2
-                WHERE (
-	                (SELECT COUNT(DISTINCT QuizID) FROM Quiz) = 
-	                (SELECT COUNT(DISTINCT SourceID) FROM UserPoints WHERE UserID = :uid AND Score = 100))"""
-    cursor.execute(query, {"uid": UserID})
-    conn.commit()
-    conn.close()
-
-def achTheGameIsAfoot(UserID):
-    """Achievement: Sign up for mailing list"""
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()    
-    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
-                SELECT :uid, 3
-                WHERE EXISTS(
-	                SELECT email
-	                FROM NewsletterEmails
-	                WHERE email = (
-		                SELECT Email FROM UserData WHERE ID = :uid))"""
-    cursor.execute(query, {"uid": UserID})
-    conn.commit()
-    conn.close()
-
-def achMaster(UserID):
-    """Achievement: Reach top 3 in your company leaderboard"""
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()    
-    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
-                SELECT :uid, 12
-                WHERE :uid IN (
-                    SELECT UP.UserID
-                    FROM UserPoints UP
-                    JOIN UserData UD ON UP.UserID = UD.ID
-                    WHERE UD.Company = (
-                        SELECT Company FROM UserData WHERE ID = :uid
-                    )
-                    GROUP BY UP.UserID
-                    ORDER BY SUM(UP.Score) DESC
-                    LIMIT 3)"""
-    cursor.execute(query, {"uid": UserID})
-    conn.commit()
-    conn.close()
