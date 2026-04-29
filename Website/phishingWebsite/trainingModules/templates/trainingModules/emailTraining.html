@@ -247,6 +247,7 @@
 ];
 
 	let currentMail = 0;
+	let score = 0;
 
 	function showMail() {
 		document.getElementById("senderName").textContent = emails[currentMail].senderName;
@@ -285,6 +286,7 @@
 		document.getElementById("is-not-phish-button").disabled = true;
 		
 		if (answer == emails[currentMail].status) {
+			score++;
 			correctAnswer(event);
 		}
 		else {
@@ -306,8 +308,21 @@
 			document.querySelector(".phish-demo").innerHTML = `
 				<h2>Great job!</h2>
 				<p>You have completed the phishing simulation. Keep practicing to stay vigilant against real threats.</p>
+				<p>Your score: ${score}/${emails.length}</p>
 				<button class="logout-button" onclick="goToModules()">Back to Modules</button>
 			`;
+			fetch("{% url 'trainingModules:updateUserScore' %}", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": "{{ csrf_token }}"
+			},
+			body: JSON.stringify({
+				quizID: "Module2",
+				score: score,
+				total: emails.length
+			})
+		});
 		}
 
 	}
