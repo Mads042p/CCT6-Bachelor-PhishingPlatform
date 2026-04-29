@@ -24,8 +24,8 @@ def newsletter(request):
 def sendEmail(request):
     subject = "Phishing Email from python"
     body = "This is a phishing email sent from a python script."
-    sender = "phishmedevelopment@gmail.com"
-    to = "rreellaaqq@gmail.com"
+    sender = "lkmklm@gmail.com"
+    to = "tobias.steenberg@outlook.dk"
     password = "wbkz tlhu wqzg ekxq"
 
     em = EmailMessage()
