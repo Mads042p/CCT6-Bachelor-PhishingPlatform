@@ -16,7 +16,9 @@ def goToDashboard(request):
         name = request.POST.get("name")
         email = request.POST.get("email")
         password = request.POST.get("password")
-        company = request.POST.get("company")
+        companyCode = request.POST.get("company")
+
+        company = getCompany(companyCode)
         
         
         data = {

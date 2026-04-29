@@ -172,3 +172,79 @@ def getUserCompanyScores(email):
     ]
 
     return leaderboard_data
+
+def getCompany(companyCode):
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""SELECT CompanyName 
+                FROM CompanyTable 
+                WHERE CompanyCode = ?"""
+    cursor.execute(query, (companyCode,))
+    conn.commit()
+    result = cursor.fetchone()
+    conn.close()
+
+    return result[0] if result else None
+
+# ---------------- INDIVIDUAL ACHIEVEMENTS ----------------
+
+def achTrainingComplete(UserID):
+    """Achievement: Complete all training courses"""
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
+                SELECT :uid, 1
+                WHERE (
+	                (SELECT COUNT(DISTINCT QuizID) FROM Quiz) = 
+	                (SELECT COUNT(DISTINCT SourceID) FROM UserPoints WHERE UserID = :uid))"""
+    cursor.execute(query, {"uid": UserID})
+    conn.commit()
+    conn.close()
+
+def achAPlusStudent(UserID):
+    """Achievement: Complete all training courses with 100% accuracy"""
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
+                SELECT :uid, 2
+                WHERE (
+	                (SELECT COUNT(DISTINCT QuizID) FROM Quiz) = 
+	                (SELECT COUNT(DISTINCT SourceID) FROM UserPoints WHERE UserID = :uid AND Score = 100))"""
+    cursor.execute(query, {"uid": UserID})
+    conn.commit()
+    conn.close()
+
+def achTheGameIsAfoot(UserID):
+    """Achievement: Sign up for mailing list"""
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
+                SELECT :uid, 3
+                WHERE EXISTS(
+	                SELECT email
+	                FROM NewsletterEmails
+	                WHERE email = (
+		                SELECT Email FROM UserData WHERE ID = :uid))"""
+    cursor.execute(query, {"uid": UserID})
+    conn.commit()
+    conn.close()
+
+def achMaster(UserID):
+    """Achievement: Reach top 3 in your company leaderboard"""
+    conn = sqlite3.connect("db.db", check_same_thread=False)
+    cursor = conn.cursor()    
+    query = f"""INSERT OR IGNORE INTO UserAchievements (UserID, AchievementID)
+                SELECT :uid, 12
+                WHERE :uid IN (
+                    SELECT UP.UserID
+                    FROM UserPoints UP
+                    JOIN UserData UD ON UP.UserID = UD.ID
+                    WHERE UD.Company = (
+                        SELECT Company FROM UserData WHERE ID = :uid
+                    )
+                    GROUP BY UP.UserID
+                    ORDER BY SUM(UP.Score) DESC
+                    LIMIT 3)"""
+    cursor.execute(query, {"uid": UserID})
+    conn.commit()
+    conn.close()
