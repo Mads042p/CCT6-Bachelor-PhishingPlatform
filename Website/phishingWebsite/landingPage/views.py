@@ -35,11 +35,9 @@ def sendEmail(request):
     em.set_content(body)
 
     conttext = ssl.create_default_context()
-    print("Sending email...")
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=conttext) as smtp:
         smtp.login(sender, password)
         smtp.sendmail(sender, to, em.as_string())
-    print("Email sent successfully!")
     return redirect('/')
 

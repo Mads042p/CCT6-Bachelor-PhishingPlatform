@@ -31,7 +31,6 @@ def goToAchievements(request):
 def phishingExplained(request):
     quizID = "Module1"
     quizData = getQuiz(quizID)
-    print(quizData)
 
     return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})
 

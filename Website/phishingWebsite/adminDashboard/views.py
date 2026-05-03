@@ -5,7 +5,6 @@ from django.http import HttpResponseForbidden
 
 def adminDashboard(request):
     isAdmin = request.session.get("isAdmin")
-    print(isAdmin)
     
     if not isAdmin:
         return HttpResponseForbidden("Admins only")

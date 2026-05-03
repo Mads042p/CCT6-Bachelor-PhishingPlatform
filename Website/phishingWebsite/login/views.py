@@ -8,7 +8,6 @@ def index(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        print(f"Email: {email}, Password: {password}")
         # Gets the hashed version of the password using their email to look up the right password.
         dbPassword = getHashedPassword("UserData", email)
         
