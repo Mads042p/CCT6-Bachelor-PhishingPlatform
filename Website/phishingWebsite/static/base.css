@@ -1202,8 +1202,8 @@ input[type=number] {
     display: block;
     height: 100%;
     text-decoration: none;
-    color: white;
-    background: linear-gradient(135deg, #1ecf11, #036521);
+    color: var(--c-gray-700);
+    background: linear-gradient(135deg, var(--c-green-500), #0c6326);
     padding: 20px;
     border-radius: 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;

@@ -59,9 +59,9 @@ def updateUserScore(request):
         
         # Either insert score into database if the quiz was completed for the first time, or update the score
         if not previousScore:
-            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
 
         if score > previousScore:
-            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M:%S"))
     
     return JsonResponse({"status": "ok"})

@@ -39,17 +39,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
             <script>
-                function showError(message) {
-                    const errorContainer = document.getElementById('errorContainer');
-                    const errorMessage = document.getElementById('errorMessage');
-                    errorMessage.textContent = message;
-                    errorContainer.style.display = 'block';
-                }
-                
-                function hideError() {
-                    const errorContainer = document.getElementById('errorContainer');
-                    errorContainer.style.display = 'none';
-                }
+ 
                 // Get CSRF token from the hidden input
                 const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
                 const csrfToken = csrfInput ? csrfInput.value : '';
@@ -69,12 +59,10 @@
                 // Function to authenticate the log-in.
                 async function submitLogin() {
                     try {
-                        hideError();
                         const email = sanitize(document.getElementById('email').value);
                         const password = sanitize(document.getElementById('password').value);
 
                         if (!email || !password) {
-                            showError("All fields are required.");
                             return;
                         }
 
@@ -102,7 +90,6 @@
 
                             if (!response.ok) {
                                 const text = await response.text();
-                                showError(text || "Login failed. Please try again.");
                                 return;
                             }
 
@@ -110,12 +97,10 @@
                             console.log("Success:", text);
                         } catch (fetchError) {
                             console.error('Fetch error:', fetchError);
-                            showError('Network error. Please check your connection and try again.');
                         }
 
                     } catch (error) {
                         console.error(error);
-                        showError("An unexpected error occurred. Please try again.");
                     }
                 }
             </script>
