@@ -72,6 +72,9 @@ a {
 }
 
 .app-header {
+	position: sticky;
+	top: 0;
+	background-color: var(--c-gray-800);
 	display: grid;
 	grid-template-columns: minmax(min-content, 175px) minmax(max-content, 1fr) minmax(max-content, 300px);
 	column-gap: 4rem;

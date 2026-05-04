@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def index(request):
     try:
         if request.method == "POST":
-            email = request.POST.get("email")
+            email = request.POST.get("email").lower()
             password = request.POST.get("password")
             
             if not email or not password:

@@ -21,7 +21,7 @@ def goToDashboard(request):
 
         if request.method == "POST":
             name = request.POST.get("name")
-            email = request.POST.get("email")
+            email = request.POST.get("email").lower()
             password = request.POST.get("password")
             companyCode = request.POST.get("company")
 
@@ -30,11 +30,10 @@ def goToDashboard(request):
                 return render(request, 'signup/signup.html', {'error': 'Please fill in all required fields'})
             
             try:
+                if not companyCode:
+                    company = "DefaultCompany"
                 company = getCompany(companyCode)
                 
-                if not company:
-                    logger.warning(f"Signup attempt with invalid company code: {companyCode}")
-                    return render(request, 'signup/signup.html', {'error': 'Invalid company code'})
                 
                 data = {
                     "name": name, 

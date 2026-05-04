@@ -61,14 +61,14 @@ def achievements(request):
         for row in rows:
             completedAchievements.append(row[0])
 
-        for achievement in achievements:
+        for achievement in achievements_list:
             if achievement["id"] in completedAchievements:
                 achievement["completed"] = True
     except Exception as e:
         logger.error(f"Error marking completed achievements for user {userID}: {str(e)}")
     
     try:
-        return render(request, 'achievements/achievements.html', {"achievements": achievements})
+        return render(request, 'achievements/achievements.html', {"achievements": achievements_list})
     except Exception as e:
         logger.error(f"Error rendering achievements page for user {userID}: {str(e)}")
         return HttpResponse("An error occurred while loading achievements", status=500)

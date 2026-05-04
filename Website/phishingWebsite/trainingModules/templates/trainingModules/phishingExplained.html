@@ -203,7 +203,6 @@
 	console.error('Error initializing quiz:', error);
 	document.getElementById('quiz').innerHTML = '<p>Error loading quiz data. Please refresh the page.</p>';
 }
-<script>
     function goToAchievements() {
         try {
             window.location.href = "{% url 'trainingModules:goToAchievements' %}";
