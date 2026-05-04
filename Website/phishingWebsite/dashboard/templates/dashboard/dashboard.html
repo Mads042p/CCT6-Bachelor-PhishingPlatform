@@ -74,21 +74,51 @@
 
 <script>
     function goToAchievements() {
-        window.location.href = "{% url 'dashboard:goToAchievements' %}";
+        try {
+            window.location.href = "{% url 'dashboard:goToAchievements' %}";
+        } catch (error) {
+            console.error('Error navigating to achievements:', error);
+            alert('An error occurred. Please try again.');
+        }
     }
-	function goToLeaderboard() {
-		window.location.href = "{% url 'dashboard:goToLeaderboard' %}";
-	}
-	function goToModules() {
-		window.location.href = "{% url 'dashboard:goToModules' %}";
-	}
-	function goToAdminDashboard() {
-		window.location.href = "{% url 'dashboard:goToAdminDashboard' %}";
-	}
-	function goToDashboard() {
-		window.location.href = "{% url 'dashboard:goToDashboard' %}";
-	}
-	function logout() {
-		window.location.href = "{% url 'login:logout' %}";
-	}
+    function goToLeaderboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToLeaderboard' %}";
+        } catch (error) {
+            console.error('Error navigating to leaderboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToModules() {
+        try {
+            window.location.href = "{% url 'dashboard:goToModules' %}";
+        } catch (error) {
+            console.error('Error navigating to modules:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToAdminDashboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToAdminDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to admin dashboard:', error);
+            alert('You do not have permission to access the admin dashboard.');
+        }
+    }
+    function goToDashboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to dashboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function logout() {
+        try {
+            window.location.href = "{% url 'login:logout' %}";
+        } catch (error) {
+            console.error('Error logging out:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    }
 </script>

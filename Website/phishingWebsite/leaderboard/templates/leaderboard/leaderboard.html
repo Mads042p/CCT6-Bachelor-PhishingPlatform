@@ -178,26 +178,85 @@
 
 <script>
     function goToAchievements() {
-        window.location.href = "{% url 'leaderboard:goToAchievements' %}";
+        try {
+            window.location.href = "{% url 'leaderboard:goToAchievements' %}";
+        } catch (error) {
+            console.error('Error navigating to achievements:', error);
+            alert('An error occurred. Please try again.');
+        }
     }
-	function goToLeaderboard() {
-		window.location.href = "{% url 'leaderboard:goToLeaderboard' %}";
-	}
-	function goToModules() {
-		window.location.href = "{% url 'leaderboard:goToModules' %}";
-	}
-	function goToAdminDashboard() {
-		window.location.href = "{% url 'leaderboard:goToAdminDashboard' %}";
-	}
-	function goToDashboard() {
-		window.location.href = "{% url 'leaderboard:goToDashboard' %}";
-	}
-	function logout() {
-		window.location.href = "{% url 'login:logout' %}";
-	}
+    function goToLeaderboard() {
+        try {
+            window.location.href = "{% url 'leaderboard:goToLeaderboard' %}";
+        } catch (error) {
+            console.error('Error navigating to leaderboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToModules() {
+        try {
+            window.location.href = "{% url 'leaderboard:goToModules' %}";
+        } catch (error) {
+            console.error('Error navigating to modules:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToAdminDashboard() {
+        try {
+            window.location.href = "{% url 'leaderboard:goToAdminDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to admin dashboard:', error);
+            alert('You do not have permission to access the admin dashboard.');
+        }
+    }
+    function goToDashboard() {
+        try {
+            window.location.href = "{% url 'leaderboard:goToDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to dashboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function logout() {
+        try {
+            window.location.href = "{% url 'login:logout' %}";
+        } catch (error) {
+            console.error('Error logging out:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    }
 	// Gets the leaderboard data and post its into the website.
 	const leaderboardDataElement = document.getElementById('leaderboard-data');
 	const leaderboardList = document.getElementById('leaderboard-list');
+	
+	try {
+		if (leaderboardDataElement && leaderboardDataElement.textContent) {
+			const leaderboardData = JSON.parse(leaderboardDataElement.textContent);
+			
+			if (Array.isArray(leaderboardData) && leaderboardData.length > 0) {
+				leaderboardData.forEach((entry, index) => {
+					if (entry && entry.name && typeof entry.points !== 'undefined') {
+						const li = document.createElement('li');
+						li.className = 'leaderboard-item';
+						li.innerHTML = `
+							<div class="leaderboard-rank">${index + 1}</div>
+							<div class="leaderboard-name">${entry.name || 'Unknown'}</div>
+							<div class="leaderboard-points">${entry.points || 0} pts</div>
+						`;
+						leaderboardList.appendChild(li);
+					}
+				});
+			} else {
+				document.getElementById('leaderboard-empty').hidden = false;
+			}
+		} else {
+			console.warn('Leaderboard data not found or empty');
+			document.getElementById('leaderboard-empty').hidden = false;
+		}
+	} catch (error) {
+		console.error('Error loading leaderboard data:', error);
+		document.getElementById('leaderboard-empty').hidden = false;
+	}
 	const leaderboardEmpty = document.getElementById('leaderboard-empty');
 	const leaderboardData = leaderboardDataElement ? JSON.parse(leaderboardDataElement.textContent || '[]') : [];
 

@@ -25,12 +25,12 @@
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="form-group" id="errorContainer" style="color: red; margin-bottom: 1rem; display: none;">
+                    <p id="errorMessage"></p>
                 </div>
             
                 <button type="button" class="login-button" onclick="submitLogin()">Login</button>
+                <a href="{% url 'signup:signup' %}"><em>Don't have a company account? Sign up here.</em></a>
             </form>
         </div>
     </div>
@@ -38,6 +38,17 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
             <script>
+                function showError(message) {
+                    const errorContainer = document.getElementById('errorContainer');
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = message;
+                    errorContainer.style.display = 'block';
+                }
+                
+                function hideError() {
+                    const errorContainer = document.getElementById('errorContainer');
+                    errorContainer.style.display = 'none';
+                }
                 // Get CSRF token from the hidden input
                 const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
                 const csrfToken = csrfInput ? csrfInput.value : '';
@@ -57,11 +68,12 @@
                 // Function to authenticate the log-in.
                 async function submitLogin() {
                     try {
+                        hideError();
                         const email = sanitize(document.getElementById('email').value);
                         const password = sanitize(document.getElementById('password').value);
 
                         if (!email || !password) {
-                            alert("All fields are required.");
+                            showError("All fields are required.");
                             return;
                         }
 
@@ -73,37 +85,36 @@
                         formData.append('email', email);
                         formData.append('password', hashedPassword);
 
-                        fetch("{% url 'login:index' %}", {
-                            method: "POST",
-                            headers: {
-                                'X-CSRFToken': csrfToken
-                            },
-                            body: formData
-                        })
-                        .then(response => {
+                        try {
+                            const response = await fetch("{% url 'login:index' %}", {
+                                method: "POST",
+                                headers: {
+                                    'X-CSRFToken': csrfToken
+                                },
+                                body: formData
+                            });
+                            
                             if (response.redirected) {
                                 window.location.href = response.url;
                                 return;
                             }
 
                             if (!response.ok) {
-                                return response.text().then(text => {
-                                    alert("Error: " + text);
-                                });
+                                const text = await response.text();
+                                showError(text || "Login failed. Please try again.");
+                                return;
                             }
 
-                            return response.text().then(text => {
-                                console.log("Success:", text);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Fetch error:', error);
-                            alert('An error occurred. Please try again.');
-                        });
+                            const text = await response.text();
+                            console.log("Success:", text);
+                        } catch (fetchError) {
+                            console.error('Fetch error:', fetchError);
+                            showError('Network error. Please check your connection and try again.');
+                        }
 
                     } catch (error) {
                         console.error(error);
-                        alert("An unexpected error occurred. Please try again.");
+                        showError("An unexpected error occurred. Please try again.");
                     }
                 }
             </script>

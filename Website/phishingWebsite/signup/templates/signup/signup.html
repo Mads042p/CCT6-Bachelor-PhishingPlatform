@@ -18,6 +18,10 @@
 
             <form id="signupForm">
                 {% csrf_token %}
+                
+                <div class="form-group" id="errorContainer" style="color: red; margin-bottom: 1rem; display: none;">
+                    <p id="errorMessage"></p>
+                </div>
 
                 <div class="form-group">
                     <input type="text" id="name" name="name" placeholder="Name" required>
@@ -79,17 +83,21 @@ async function createUser() {
                 const password = sanitize(document.getElementById('password').value);
                 const name = sanitize(document.getElementById('name').value);
                 const company = sanitize(document.getElementById('company').value);
+                
+                const errorContainer = document.getElementById('errorContainer');
+                const errorMessage = document.getElementById('errorMessage');
 
                 if (!email || !password || !name) {
-                    alert("All fields are required.");
+                    errorMessage.textContent = "All fields are required.";
+                    errorContainer.style.display = 'block';
                     return;
                 }
+                
+                errorContainer.style.display = 'none';
             
                 // Hash the email and password, using SHA512. This is compared to the already stored version of the hashed password, 
                 // which was appended when the user created the account, in the backend.
                 const hashedPassword = CryptoJS.SHA512(password).toString();
-
-
 
                 //Send the data to the backend to be compared
                 const formData = new FormData();
@@ -99,33 +107,34 @@ async function createUser() {
                 formData.append('company', company);
                 const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-                fetch("{% url 'signup:goToDashboard' %}", {
-                    method: "POST",
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: formData
-                })
-                .then(response => {
+                try {
+                    const response = await fetch("{% url 'signup:goToDashboard' %}", {
+                        method: "POST",
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: formData
+                    });
+                    
                     if (response.redirected) {
                         // Follow the backend redirect target (e.g. dashboard)
                         window.location.href = response.url;
                     } else if (!response.ok) {
                         // Handle errors (e.g., invalid 2FA code)
-                        return response.text().then(text => {
-                            alert(`Error : ${text}`);
-                        });
+                        const text = await response.text();
+                        errorMessage.textContent = text || "Error creating account. Please try again.";
+                        errorContainer.style.display = 'block';
                     }
-                })
-                .catch(error => {
-                    console.error('Error creating user:', error);
-                    alert('An error occurred while creating the user. Please try again.');
-                });
-
-
+                } catch (fetchError) {
+                    console.error('Fetch error:', fetchError);
+                    errorMessage.textContent = 'Network error. Please check your connection and try again.';
+                    errorContainer.style.display = 'block';
+                }
 
             } catch (error) {
-                alert("An unexpected error occurred. Please try again.");
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = "An unexpected error occurred. Please try again.";
+                document.getElementById('errorContainer').style.display = 'block';
             }
         }
 

@@ -1,13 +1,19 @@
 from django.shortcuts import render
 import sqlite3
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Establish the connection to the db
 def cursorConnect():
-    conn = sqlite3.connect("db.db", check_same_thread=False)
-    cursor = conn.cursor()
-    
-    return conn, cursor
+    try:
+        conn = sqlite3.connect("db.db", check_same_thread=False)
+        cursor = conn.cursor()
+        return conn, cursor
+    except Exception as e:
+        logger.error(f"Error connecting to database: {str(e)}")
+        raise
     
 # Command for inserting new data into the database.
 def insertData(table_name, data):

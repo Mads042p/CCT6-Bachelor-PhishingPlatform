@@ -1,28 +1,46 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from sqlmanager.views import *
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
+import logging
+
+logger = logging.getLogger(__name__)
 
 def adminDashboard(request):
-    isAdmin = request.session.get("isAdmin")
-    
-    if not isAdmin:
-        return HttpResponseForbidden("Admins only")
+    try:
+        isAdmin = request.session.get("isAdmin")
+        
+        if not isAdmin:
+            logger.warning(f"Unauthorized access attempt to admin dashboard")
+            return HttpResponseForbidden("You do not have permission to access this page")
 
-    company = request.session.get("company")
+        company = request.session.get("company")
+        
+        if not company:
+            logger.warning(f"Admin dashboard access without company information")
+            return HttpResponse("Company information not found", status=400)
 
-    rows = getEmployees(company)
-    employees = []
+        try:
+            rows = getEmployees(company)
+            employees = []
 
-    for row in rows:
-        employee = {
-            "id": row[0],
-            "name": row[1],
-            "email": row[2]
-        }
-        employees.append(employee)
+            if rows:
+                for row in rows:
+                    if row and len(row) >= 3:
+                        employee = {
+                            "id": row[0],
+                            "name": row[1],
+                            "email": row[2]
+                        }
+                        employees.append(employee)
+        except Exception as e:
+            logger.error(f"Error fetching employees for company {company}: {str(e)}")
+            employees = []
 
-    return render(request, 'adminDashboard/adminDashboard.html', {"employees": employees, "company": company})
+        return render(request, 'adminDashboard/adminDashboard.html', {"employees": employees, "company": company})
+    except Exception as e:
+        logger.error(f"Error in adminDashboard view: {str(e)}")
+        return HttpResponse("An error occurred while loading the admin dashboard", status=500)
 
 def goToDashboard(request):
     return redirect('dashboard:dashboard')

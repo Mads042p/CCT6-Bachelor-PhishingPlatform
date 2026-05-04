@@ -71,74 +71,88 @@
         
         // Function to create a unique company code for each company.
         async function createCompanyCode(){
-            
-            const company = document.getElementById("companyName").value;
-            const email = document.getElementById("adminEmail").value;
-            // Creates the code by taking the 4 first letters in the company plus a random number from 1000-9999
-            const companyCode = company.slice(0, 4) + Math.floor(1000 + Math.random()*9000);
-            const CVRNumber = document.getElementById("CVRnr").value;
-            // Awaits the key and the encrypted email
-            const derivedKey = await deriveKey(email, companyCode);
-            const encryptedEmail = await encryptData(email, derivedKey);
-
-            const hex = Array.from(encryptedEmail.encryptedData)
-                .map(b => b.toString(16).padStart(2, "0"))
-                    .join("");
-            
-            const decrypted = await decryptMessage(
-                derivedKey,
-                encryptedEmail.encryptedData,
-                encryptedEmail.iv
-            );
-            const decoder = new TextDecoder("utf-8");
-
-            const formData = new FormData();
-            formData.append('companyCode', companyCode);
-            formData.append('companyName', company);
-            formData.append('encryptedEmail', Array.from(encryptedEmail.encryptedData).map(b => b.toString(16).padStart(2, "0")).join(""));
-            formData.append('iv', Array.from(encryptedEmail.iv).map(b => b.toString(16).padStart(2, "0")).join(""));
-            formData.append('CVRNumber', CVRNumber);
-            
-            fetch("{% url 'signup:createCompany' %}", {
-                method: "POST",
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: formData
-            })
-            .then(response => {
-
-                const companyCodeLabel = document.getElementById("companyCodeLabel");
-                const confirmInput = document.getElementById("confirmCode");
-                const continueBtn = document.getElementById("continueBtn");
-
-                companyCodeLabel.textContent = "Company Code: " + companyCode;
+            try {
+                const company = document.getElementById("companyName").value;
+                const email = document.getElementById("adminEmail").value;
+                const CVRNumber = document.getElementById("CVRnr").value;
                 
-                // Enable input field
-                confirmInput.disabled = false;
-                confirmInput.focus();
-
-                    // Check if user typed correct code
-                confirmInput.addEventListener("input", () => {
-                    if (confirmInput.value === companyCode) {
-                        continueBtn.disabled = false;
-                    } else {
-                        continueBtn.disabled = true;
+                if (!company || !email || !CVRNumber) {
+                    alert('Please fill in all required fields.');
+                    return;
                 }
-                });
+                
+                // Creates the code by taking the 4 first letters in the company plus a random number from 1000-9999
+                const companyCode = company.slice(0, 4) + Math.floor(1000 + Math.random()*9000);
+                
+                try {
+                    // Awaits the key and the encrypted email
+                    const derivedKey = await deriveKey(email, companyCode);
+                    const encryptedEmail = await encryptData(email, derivedKey);
 
-                // Redirect only after correct input
-                continueBtn.onclick = () => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
+                    const hex = Array.from(encryptedEmail.encryptedData)
+                        .map(b => b.toString(16).padStart(2, "0"))
+                            .join("");
+                    
+                    const decrypted = await decryptMessage(
+                        derivedKey,
+                        encryptedEmail.encryptedData,
+                        encryptedEmail.iv
+                    );
+                    const decoder = new TextDecoder("utf-8");
+
+                    const formData = new FormData();
+                    formData.append('companyCode', companyCode);
+                    formData.append('companyName', company);
+                    formData.append('encryptedEmail', Array.from(encryptedEmail.encryptedData).map(b => b.toString(16).padStart(2, "0")).join(""));
+                    formData.append('iv', Array.from(encryptedEmail.iv).map(b => b.toString(16).padStart(2, "0")).join(""));
+                    formData.append('CVRNumber', CVRNumber);
+                    
+                    try {
+                        const response = await fetch("{% url 'signup:createCompany' %}", {
+                            method: "POST",
+                            headers: {
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                            },
+                            body: formData
+                        });
+
+                        const companyCodeLabel = document.getElementById("companyCodeLabel");
+                        const confirmInput = document.getElementById("confirmCode");
+                        const continueBtn = document.getElementById("continueBtn");
+
+                        companyCodeLabel.textContent = "Company Code: " + companyCode;
+                        
+                        // Enable input field
+                        confirmInput.disabled = false;
+                        confirmInput.focus();
+
+                            // Check if user typed correct code
+                        confirmInput.addEventListener("input", () => {
+                            if (confirmInput.value === companyCode) {
+                                continueBtn.disabled = false;
+                            } else {
+                                continueBtn.disabled = true;
+                        }
+                        });
+
+                        // Redirect only after correct input
+                        continueBtn.onclick = () => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            }
+                        };
+                    } catch (fetchError) {
+                        console.error('Fetch error:', fetchError);
+                        alert('Network error. Please check your connection and try again.');
                     }
-                };
-            })
-            .catch(error => {
+                } catch (encryptionError) {
+                    console.error('Encryption error:', encryptionError);
+                    alert('An error occurred while processing your company code. Please try again.');
+                }
+            } catch (error) {
                 console.error('Error creating company code:', error);
                 alert('An error occurred while creating the company code. Please try again.');
-            });
-            
+            }
         }
 
         // Creates an encryptionkey using the company email and the companycode as a salt.
