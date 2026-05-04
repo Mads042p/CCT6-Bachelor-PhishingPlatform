@@ -155,21 +155,45 @@
 
 <script>
     function goToAchievements() {
-        window.location.href = "{% url 'achievements:goToAchievements' %}";
+        try {
+            window.location.href = "{% url 'achievements:goToAchievements' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
     }
-	function goToLeaderboard() {
-		window.location.href = "{% url 'achievements:goToLeaderboard' %}";
-	}
-	function goToModules() {
-		window.location.href = "{% url 'achievements:goToModules' %}";
-	}
-	function goToAdminDashboard() {
-		window.location.href = "{% url 'achievements:goToAdminDashboard' %}";
-	}
-	function goToDashboard() {
-		window.location.href = "{% url 'achievements:goToDashboard' %}";
-	}
-	function logout() {
-		window.location.href = "{% url 'login:logout' %}";
-	}
+    function goToLeaderboard() {
+        try {
+            window.location.href = "{% url 'achievements:goToLeaderboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToModules() {
+        try {
+            window.location.href = "{% url 'achievements:goToModules' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToAdminDashboard() {
+        try {
+            window.location.href = "{% url 'achievements:goToAdminDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToDashboard() {
+        try {
+            window.location.href = "{% url 'achievements:goToDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function logout() {
+        try {
+            window.location.href = "{% url 'login:logout' %}";
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
 </script>

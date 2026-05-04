@@ -67,6 +67,7 @@
 				<div id="question"></div>
 
 				<div id="options"></div>
+				<div id="errorMsg" style="color: red; margin-top: 1rem; display: none;"></div>
 			</div>
 		</body>
 		<div></div>
@@ -79,110 +80,152 @@
 
 <script>
 	// Load quiz data from the template
-	const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
-
-	const questionElement = document.getElementById("question");
-	const optionsElement = document.getElementById("options");	
-
-	let currentQuestion = 0;
-	let score = 0;
-
-	// Function to display the current question and options
-	function showQuestion() {
-		const question = quizData[currentQuestion];
-		questionElement.innerText = question.question;
-
-		optionsElement.innerHTML = "";
-		question.options.forEach(option => {
-			const button = document.createElement("button");
-			button.classList.add('login-button');
-			button.innerText = option;
-			optionsElement.appendChild(button);
-			button.addEventListener("click", selectAnswer);
-		});
-	}
-	// Function to handle answer selection and provide feedback from the quiz data
-	function selectAnswer(e) {
-		const selectedButton = e.target;
-		const answer = quizData[currentQuestion].answer;
-		optionsElement.innerHTML = "";
-		const feedback = document.createElement("p");
-		feedback.classList.add('body');
-
-		if (selectedButton.innerText === answer) {
-			score++;
-			feedback.innerText = quizData[currentQuestion].answerCorrect;
-		} else {
-			feedback.innerText = quizData[currentQuestion].answerWrong;
+	try {
+		const quizDataElement = document.getElementById("quiz-data");
+		if (!quizDataElement) {
+			throw new Error('Quiz data element not found');
+		}
+		
+		const quizData = JSON.parse(quizDataElement.textContent);
+		if (!Array.isArray(quizData) || quizData.length === 0) {
+			throw new Error('Invalid quiz data');
 		}
 
-		optionsElement.appendChild(feedback);
-		const nextButton = document.createElement("button");
-		nextButton.classList.add('logout-button');
-		nextButton.innerText = "Next Question";
-		optionsElement.appendChild(nextButton);
-		nextButton.addEventListener("click", showResult);
-	}
+		const questionElement = document.getElementById("question");
+		const optionsElement = document.getElementById("options");
+		const errorMsg = document.getElementById("errorMsg");
 
-//Only show th score, when the quiz is finished
-function showResult() {
-	currentQuestion++;
+		let currentQuestion = 0;
+		let score = 0;
 
-	if (currentQuestion < quizData.length) {
-		showQuestion();
-	} else {
-		showScore();
-	}
-}
-	// Function to display the final score and a button to return to the modules page, and send the score to the server
-	function showScore() {
-		quiz.innerHTML = `
-    	<h1>Quiz Completed!</h1>
-    	<p>Your score: ${score}/${quizData.length}</p>
-		`;
+		// Function to display the current question and options
+		function showQuestion() {
+			try {
+				errorMsg.style.display = 'none';
+				
+				if (currentQuestion >= quizData.length) {
+					showScore();
+					return;
+				}
+				
+				const question = quizData[currentQuestion];
+				if (!question) {
+					throw new Error('Question data missing');
+				}
+				
+				questionElement.innerText = question.question || 'Question';
+
+				optionsElement.innerHTML = "";
+				if (!question.options || !Array.isArray(question.options)) {
+					throw new Error('Options data missing');
+				}
+				
+				question.options.forEach(option => {
+					const button = document.createElement("button");
+					button.classList.add('login-button');
+					button.innerText = option;
+					optionsElement.appendChild(button);
+					button.addEventListener("click", selectAnswer);
+				});
+			} catch (error) {
+				console.error('Error displaying question:', error);
+				errorMsg.innerText = 'Error loading question. Please refresh the page.';
+				errorMsg.style.display = 'block';
+			}
+		}
 		
-		const returnButton = document.createElement("button");
-		returnButton.classList.add('logout-button');
-		returnButton.innerText = "Return to Modules";
-		quiz.appendChild(returnButton);
-		returnButton.addEventListener("click", goToModules);
+		// Function to handle answer selection and provide feedback from the quiz data
+		function selectAnswer(e) {
+			try {
+				const selectedButton = e.target;
+				const question = quizData[currentQuestion];
+				if (!question) throw new Error('Question data missing');
+				
+				const answer = question.answer;
+				optionsElement.innerHTML = "";
+				const feedback = document.createElement("p");
+				feedback.classList.add('body');
 
-		fetch("{% url 'trainingModules:updateUserScore' %}", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-CSRFToken": "{{ csrf_token }}"
-			},
-			body: JSON.stringify({
-				quizID: "Module1",
-				score: score,
-				total: quizData.length
-			})
-		});
-	}
+				if (selectedButton.innerText === answer) {
+					score++;
+					feedback.innerText = question.answerCorrect || "Correct!";
+				} else {
+					feedback.innerText = question.answerWrong || "Incorrect, try again.";
+				}
 
-	showQuestion();
-</script>
+				optionsElement.appendChild(feedback);
+				const nextButton = document.createElement("button");
+				nextButton.classList.add('logout-button');
+				nextButton.innerText = "Next Question";
+				optionsElement.appendChild(nextButton);
+				nextButton.addEventListener("click", showResult);
+			} catch (error) {
+				console.error('Error in selectAnswer:', error);
+				errorMsg.innerText = 'Error processing your answer. Please try again.';
+				errorMsg.style.display = 'block';
+			}
+		}
 
+		//Only show th score, when the quiz is finished
+		function showResult() {
+			try {
+				currentQuestion++;
 
-<script>
-	// Buttons that redirects to other sites.
-    function goToAchievements() {
-        window.location.href = "{% url 'trainingModules:goToAchievements' %}";
-    }
-	function goToLeaderboard() {
-		window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
-	}
-	function goToModules() {
-		window.location.href = "{% url 'trainingModules:goToModules' %}";
-	}
-	function goToAdminDashboard() {
-		window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
-	}
-	function goToDashboard() {
-		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
-	}
-	function logout() {
-		window.location.href = "{% url 'login:logout' %}";
+				if (currentQuestion < quizData.length) {
+					showQuestion();
+				} else {
+					showScore();
+				}
+			} catch (error) {
+				console.error('Error in showResult:', error);
+				errorMsg.innerText = 'An error occurred. Please refresh the page.';
+				errorMsg.style.display = 'block';
+			}
+		}
+		
+		// Function to display the final score and a button to return to the modules page, and send the score to the server
+		function showScore() {
+			try {
+				const quiz = document.getElementById('quiz');
+				quiz.innerHTML = `
+    		<h1>Quiz Completed!</h1>
+    		<p>Your score: ${score}/${quizData.length}</p>
+			`;
+				
+				const returnButton = document.createElement("button");
+				returnButton.classList.add('logout-button');
+				returnButton.innerText = "Return to Modules";
+				quiz.appendChild(returnButton);
+				returnButton.addEventListener("click", goToModules);
+
+				try {
+					fetch("{% url 'trainingModules:updateUserScore' %}", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"X-CSRFToken": "{{ csrf_token }}"
+						},
+						body: JSON.stringify({
+							quizID: "Module1",
+							score: score,
+							total: quizData.length
+						})
+					}).catch(error => {
+						console.error('Error sending score:', error);
+					});
+				} catch (fetchError) {
+					console.error('Error submitting score:', fetchError);
+				}
+			} catch (error) {
+				console.error('Error in showScore:', error);
+				document.getElementById('quiz').innerHTML = '<p>Error displaying score. Please refresh the page.</p>';
+			}
+		}
+
+		showQuestion();
+		
+	} catch (initError) {
+		console.error('Error initializing quiz:', initError);
+		document.getElementById('quiz').innerHTML = '<p>Error loading quiz data. Please refresh the page.</p>';
 	}
 </script>
