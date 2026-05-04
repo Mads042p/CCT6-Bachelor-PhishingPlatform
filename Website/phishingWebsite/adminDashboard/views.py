@@ -11,8 +11,7 @@ def adminDashboard(request):
         isAdmin = request.session.get("isAdmin")
         
         if not isAdmin:
-            logger.warning(f"Unauthorized access attempt to admin dashboard")
-            return HttpResponseForbidden("You do not have permission to access this page")
+            return HttpResponseForbidden("Admins only")
 
         company = request.session.get("company")
         
@@ -24,15 +23,14 @@ def adminDashboard(request):
             rows = getEmployees(company)
             employees = []
 
-            if rows:
-                for row in rows:
-                    if row and len(row) >= 3:
-                        employee = {
-                            "id": row[0],
-                            "name": row[1],
-                            "email": row[2]
-                        }
-                        employees.append(employee)
+            for row in rows:
+                employee = {
+                    "id": row[0],
+                    "name": row[1],
+                    "email": row[2]
+                }
+                employees.append(employee)
+                
         except Exception as e:
             logger.error(f"Error fetching employees for company {company}: {str(e)}")
             employees = []

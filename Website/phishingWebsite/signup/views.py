@@ -27,7 +27,6 @@ def goToDashboard(request):
 
             # Validate required fields
             if not name or not email or not password:
-                logger.warning("Signup attempt with missing required fields")
                 return render(request, 'signup/signup.html', {'error': 'Please fill in all required fields'})
             
             try:
@@ -45,7 +44,6 @@ def goToDashboard(request):
                     }
                 
                 insertUserData(tableName, data)
-                logger.info(f"New user registered: {email}")
                 return redirect('login:index')
             except Exception as e:
                 logger.error(f"Error during signup for email {email}: {str(e)}")
