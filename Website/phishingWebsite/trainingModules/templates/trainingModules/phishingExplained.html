@@ -78,106 +78,172 @@
 
 <script>
 	// Get the and quiz data and initialize the score 
-	const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
-	const questionElement = document.getElementById("question");
-	const optionsElement = document.getElementById("options");	
-	let currentQuestion = 0;
-	let score = 0;
+	try {
+		const quizData = JSON.parse(document.getElementById("quiz-data").textContent);
+		const questionElement = document.getElementById("question");
+		const optionsElement = document.getElementById("options");  
+		let currentQuestion = 0;
+		let score = 0;
 
-	// Function to rendering the current quiz question and its answer options into the UI
-	function showQuestion() {
-		const question = quizData[currentQuestion];
-		questionElement.innerText = question.question;
+		// Function to rendering the current quiz question and its answer options into the UI
+		function showQuestion() {
+			try {
+				if (!quizData || currentQuestion >= quizData.length) {
+					showScore();
+					return;
+				}
+				
+				const question = quizData[currentQuestion];
+				if (!question) {
+					console.error('Question data missing');
+					return;
+				}
+				
+				questionElement.innerText = question.question || 'Question';
 
-		optionsElement.innerHTML = "";
-		question.options.forEach(option => {
-			const button = document.createElement("button");
-			button.classList.add('login-button');
-			button.innerText = option;
-			optionsElement.appendChild(button);
-			button.addEventListener("click", selectAnswer);
-		});
-	}
-
-	//Function that updates the quiz, checks what the user answered and updates the score.
-	function selectAnswer(e) {
-		const selectedButton = e.target;
-		const answer = quizData[currentQuestion].answer;
-		optionsElement.innerHTML = "";
-		const feedback = document.createElement("p");
-		feedback.classList.add('body');
-
-		if (selectedButton.innerText === answer) {
-			score++;
-			feedback.innerText = quizData[currentQuestion].answerCorrect;
-		} else {
-			feedback.innerText = quizData[currentQuestion].answerWrong;
+				optionsElement.innerHTML = "";
+				if (question.options && Array.isArray(question.options)) {
+					question.options.forEach(option => {
+						const button = document.createElement("button");
+						button.classList.add('login-button');
+						button.innerText = option;
+						optionsElement.appendChild(button);
+						button.addEventListener("click", selectAnswer);
+					});
+				}
+			} catch (error) {
+				console.error('Error displaying question:', error);
+				questionElement.innerText = 'Error loading question. Please refresh the page.';
+			}
 		}
 
-		optionsElement.appendChild(feedback);
-		const nextButton = document.createElement("button");
-		nextButton.classList.add('logout-button');
-		nextButton.innerText = "Next Question";
-		optionsElement.appendChild(nextButton);
-		nextButton.addEventListener("click", showResult);
-	}
+		//Function that updates the quiz, checks what the user answered and updates the score.
+		function selectAnswer(e) {
+			try {
+				const selectedButton = e.target;
+				const question = quizData[currentQuestion];
+				const answer = question ? question.answer : null;
+				optionsElement.innerHTML = "";
+				const feedback = document.createElement("p");
+				feedback.classList.add('body');
 
-function showResult() {
-	currentQuestion++;
+				if (selectedButton.innerText === answer) {
+					score++;
+					feedback.innerText = question.answerCorrect || "Correct!";
+				} else {
+					feedback.innerText = question.answerWrong || "Incorrect, try again.";
+				}
 
-	if (currentQuestion < quizData.length) {
-		showQuestion();
-	} else {
-		showScore();
+				optionsElement.appendChild(feedback);
+				const nextButton = document.createElement("button");
+				nextButton.classList.add('logout-button');
+				nextButton.innerText = "Next Question";
+				optionsElement.appendChild(nextButton);
+				nextButton.addEventListener("click", showResult);
+			} catch (error) {
+				console.error('Error in selectAnswer:', error);
+				optionsElement.innerHTML = '<p>Error processing your answer. Please try again.</p>';
+			}
+		}
+
+	function showResult() {
+		try {
+			currentQuestion++;
+
+			if (currentQuestion < quizData.length) {
+				showQuestion();
+			} else {
+				showScore();
+			}
+		} catch (error) {
+			console.error('Error in showResult:', error);
+		}
 	}
-}
 
 	function showScore() {
-		quiz.innerHTML = `
+		try {
+			document.getElementById('quiz').innerHTML = `
     	<h1>Quiz Completed!</h1>
     	<p>Your score: ${score}/${quizData.length}</p>
 		`;
-		
-		const returnButton = document.createElement("button");
-		returnButton.classList.add('logout-button');
-		returnButton.innerText = "Return to Modules";
-		quiz.appendChild(returnButton);
-		returnButton.addEventListener("click", goToModules);
+			
+			const quiz = document.getElementById('quiz');
+			const returnButton = document.createElement("button");
+			returnButton.classList.add('logout-button');
+			returnButton.innerText = "Return to Modules";
+			quiz.appendChild(returnButton);
+			returnButton.addEventListener("click", goToModules);
 
-		fetch("{% url 'trainingModules:updateUserScore' %}", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"X-CSRFToken": "{{ csrf_token }}"
-			},
-			body: JSON.stringify({
-				quizID: "Module1",
-				score: score,
-				total: quizData.length
-			})
-		});
+			try {
+				fetch("{% url 'trainingModules:updateUserScore' %}", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": "{{ csrf_token }}"
+					},
+					body: JSON.stringify({
+						quizID: "Module1",
+						score: score,
+						total: quizData.length
+					})
+				}).catch(error => {
+					console.error('Error sending score:', error);
+				});
+			} catch (error) {
+				console.error('Error submitting score:', error);
+			}
+		} catch (error) {
+			console.error('Error in showScore:', error);
+			document.getElementById('quiz').innerHTML = '<p>Error displaying score. Please refresh the page.</p>';
+		}
 	}
 
 	showQuestion();
-</script>
-
+} catch (error) {
+	console.error('Error initializing quiz:', error);
+	document.getElementById('quiz').innerHTML = '<p>Error loading quiz data. Please refresh the page.</p>';
+}
 <script>
     function goToAchievements() {
-        window.location.href = "{% url 'trainingModules:goToAchievements' %}";
+        try {
+            window.location.href = "{% url 'trainingModules:goToAchievements' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
     }
-	function goToLeaderboard() {
-		window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
-	}
-	function goToModules() {
-		window.location.href = "{% url 'trainingModules:goToModules' %}";
-	}
-	function goToAdminDashboard() {
-		window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
-	}
-	function goToDashboard() {
-		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
-	}
-	function logout() {
-		window.location.href = "{% url 'login:logout' %}";
-	}
+    function goToLeaderboard() {
+        try {
+            window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToModules() {
+        try {
+            window.location.href = "{% url 'trainingModules:goToModules' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToAdminDashboard() {
+        try {
+            window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function goToDashboard() {
+        try {
+            window.location.href = "{% url 'trainingModules:goToDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating:', error);
+        }
+    }
+    function logout() {
+        try {
+            window.location.href = "{% url 'login:logout' %}";
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    }
 </script>

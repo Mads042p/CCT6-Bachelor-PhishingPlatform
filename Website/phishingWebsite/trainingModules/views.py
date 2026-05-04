@@ -2,66 +2,130 @@ from django.shortcuts import render, redirect
 from sqlmanager.views import *
 from datetime import datetime
 from django.http import JsonResponse
+from django.http import HttpResponse
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 def trainingModules(request):
-    userID = request.session.get("userID")
-    
-    if not userID:
-        return redirect('login:index')
-    
-    return render(request, 'trainingModules/trainingModules.html')
+    try:
+        userID = request.session.get("userID")
+        
+        if not userID:
+            return redirect('login:index')
+        
+        return render(request, 'trainingModules/trainingModules.html')
+    except Exception as e:
+        logger.error(f"Error in trainingModules view: {str(e)}")
+        return HttpResponse("An error occurred while loading training modules", status=500)
 
 
 def goToDashboard(request):
-    return redirect('dashboard:dashboard')
+    try:
+        return redirect('dashboard:dashboard')
+    except Exception as e:
+        logger.error(f"Error redirecting to dashboard: {str(e)}")
+        return HttpResponse("An error occurred", status=500)
 
 def goToAdminDashboard(request):
-    return redirect('adminDashboard:adminDashboard')
+    try:
+        return redirect('adminDashboard:adminDashboard')
+    except Exception as e:
+        logger.error(f"Error redirecting to admin dashboard: {str(e)}")
+        return HttpResponse("An error occurred", status=500)
 
 def goToLeaderboard(request):
-    return redirect('leaderboard:leaderboard')
+    try:
+        return redirect('leaderboard:leaderboard')
+    except Exception as e:
+        logger.error(f"Error redirecting to leaderboard: {str(e)}")
+        return HttpResponse("An error occurred", status=500)
    
 def goToModules(request):
-    return redirect('trainingModules:trainingModules')
+    try:
+        return redirect('trainingModules:trainingModules')
+    except Exception as e:
+        logger.error(f"Error redirecting to modules: {str(e)}")
+        return HttpResponse("An error occurred", status=500)
     
 def goToAchievements(request):
-    return redirect('achievements:achievements')
+    try:
+        return redirect('achievements:achievements')
+    except Exception as e:
+        logger.error(f"Error redirecting to achievements: {str(e)}")
+        return HttpResponse("An error occurred", status=500)
 
 def phishingExplained(request):
-    quizID = "Module1"
-    quizData = getQuiz(quizID)
+    try:
+        quizID = "Module1"
+        try:
+            quizData = getQuiz(quizID)
+        except Exception as e:
+            logger.error(f"Error fetching quiz data for {quizID}: {str(e)}")
+            quizData = {}
 
-    return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})
+        return render(request, 'trainingModules/phishingExplained.html', {"quizData": quizData})
+    except Exception as e:
+        logger.error(f"Error in phishingExplained view: {str(e)}")
+        return HttpResponse("An error occurred while loading phishing module", status=500)
 
 def emailTraining(request):
-    return render(request, 'trainingmodules/emailTraining.html')
+    try:
+        return render(request, 'trainingModules/emailTraining.html')
+    except Exception as e:
+        logger.error(f"Error in emailTraining view: {str(e)}")
+        return HttpResponse("An error occurred while loading email training", status=500)
 
 def staticTraining(request):
-    return render(request, 'trainingModules/staticTraining.html')
+    try:
+        return render(request, 'trainingModules/staticTraining.html')
+    except Exception as e:
+        logger.error(f"Error in staticTraining view: {str(e)}")
+        return HttpResponse("An error occurred while loading static training", status=500)
 
 def updateUserScore(request):
     '''
     Receives a POST with JSON payload: "quizID", "score", "total"
     '''
-    if request.method == "POST":
-        data = json.loads(request.body)
+    try:
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON in updateUserScore request: {str(e)}")
+                return JsonResponse({"status": "error", "message": "Invalid JSON format"}, status=400)
 
-        quizID = data.get("quizID")
-        score = data.get("score")
-        total = data.get("total")
-        userID = request.session.get("userID")
+            quizID = data.get("quizID")
+            score = data.get("score")
+            total = data.get("total")
+            userID = request.session.get("userID")
+            
+            if not quizID or score is None or total is None or not userID:
+                logger.warning(f"Missing required parameters in updateUserScore")
+                return JsonResponse({"status": "error", "message": "Missing required parameters"}, status=400)
+            
+            try:
+                # Calculate score to put in database, from 0 to 100
+                if total == 0:
+                    logger.warning(f"Total score is 0 for quiz {quizID}")
+                    return JsonResponse({"status": "error", "message": "Invalid total score"}, status=400)
+                    
+                score = int(score/total * 100)
+
+                previousScore = getScore(userID, quizID)
+                
+                # Either insert score into database if the quiz was completed for the first time, or update the score
+                if not previousScore:
+                    upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+                elif score > previousScore:
+                    upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
+            except Exception as e:
+                logger.error(f"Error updating user score for user {userID}, quiz {quizID}: {str(e)}")
+                return JsonResponse({"status": "error", "message": "Error updating score"}, status=500)
         
-        # Calculate score to put in database, from 0 to 100
-        score = int(score/total * 100)
-
-        previousScore = getScore(userID, quizID)
-        
-        # Either insert score into database if the quiz was completed for the first time, or update the score
-        if not previousScore:
-            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
-
-        if score > previousScore:
-            upsertScore(userID, quizID, score, datetime.now().strftime("%d-%m-%Y %H:%M"))
-    
-    return JsonResponse({"status": "ok"})
+        return JsonResponse({"status": "ok"})
+    except Exception as e:
+        logger.error(f"Unexpected error in updateUserScore: {str(e)}")
+        return JsonResponse({"status": "error", "message": "An unexpected error occurred"}, status=500)
