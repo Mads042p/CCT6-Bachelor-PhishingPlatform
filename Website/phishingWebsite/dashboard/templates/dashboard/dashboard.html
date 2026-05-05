@@ -63,7 +63,14 @@
         <div></div>
         <div>
             <h1>Dashboard</h1>
-            <h3>Welcome to our very complete site</h3>
+            <h3>Hello {{username}}</h3>
+            <div>
+                <h4>Maybe you should work towards this achievement:</h4>
+                <li class="not-completed">
+                    <strong>{{ ranNotAch.name }}</strong><br>
+                    <span>{{ ranNotAch.description }}</span>
+                </li>
+            </div>
         </div>
         <div></div>
     </div>
