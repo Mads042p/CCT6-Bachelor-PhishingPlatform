@@ -73,10 +73,17 @@ def phishingExplained(request):
 
 def emailTraining(request):
     try:
-        return render(request, 'trainingModules/emailTraining.html')
+        quizID = "Module2"
+        try:
+            emails = getQuiz(quizID)
+        except Exception as e:
+            logger.error(f"Error fetching quiz data for {quizID}: {str(e)}")
+            emails = {}
+
+        return render(request, 'trainingModules/emailTraining.html', {"emails": emails})
     except Exception as e:
         logger.error(f"Error in emailTraining view: {str(e)}")
-        return HttpResponse("An error occurred while loading email training", status=500)
+        return HttpResponse("An error occurred while loading phishing module", status=500)
 
 def staticTraining(request):
     try:
