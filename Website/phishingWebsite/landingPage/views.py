@@ -39,39 +39,5 @@ def newsletter(request):
         logger.error(f"Error in newsletter view: {str(e)}")
         return redirect('/')
 
-def sendEmail(request):
-    try:
-        subject = "Phishing Email from python"
-        body = "This is a phishing email sent from a python script."
-        sender = "lkmklm@gmail.com"
-        to = "tobias.steenberg@outlook.dk"
-        password = "wbkz tlhu wqzg ekxq"
 
-        em = EmailMessage()
-        em['From'] = sender
-        em['To'] = to
-        em['Subject'] = subject
-        em.set_content(body)
-
-        context = ssl.create_default_context()
-
-        try:
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-                smtp.login(sender, password)
-                smtp.sendmail(sender, to, em.as_string())
-            logger.info(f"Email sent successfully to {to}")
-        except smtplib.SMTPAuthenticationError:
-            logger.error(f"SMTP authentication failed for sender {sender}")
-            return HttpResponse("Email authentication failed", status=500)
-        except smtplib.SMTPException as e:
-            logger.error(f"SMTP error while sending email: {str(e)}")
-            return HttpResponse("Error sending email", status=500)
-        except Exception as e:
-            logger.error(f"Error sending email: {str(e)}")
-            return HttpResponse("Error sending email", status=500)
-            
-        return redirect('/')
-    except Exception as e:
-        logger.error(f"Unexpected error in sendEmail: {str(e)}")
-        return HttpResponse("An unexpected error occurred", status=500)
 
