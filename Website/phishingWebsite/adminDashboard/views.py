@@ -81,7 +81,7 @@ def sendEmail(request):
                         body = f"""
 Hello {employee_name},
 
-This is a simulated phishing/security awareness email.
+This is a simulated phishing/security awareness email. Please follow the instructions found here: https://tinyurl.com/43tf9yyn
 
 Time sent: {time.ctime()}
 

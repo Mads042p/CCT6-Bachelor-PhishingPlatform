@@ -54,6 +54,9 @@ def dashboard(request):
         logger.error(f"Error in dashboard view: {str(e)}")
         return HttpResponse("An error occurred while loading the dashboard", status=500)
 
+def simulatedPhishing(request):
+    return render(request, 'dashboard/simulatedPhishing.html')
+
 def goToDashboard(request):
     return redirect('dashboard:dashboard')
 

@@ -1,0 +1,126 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dashboard</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="#" onclick="goToAchievements()">
+					Achievements
+				</a>
+				<a href="#" onclick="goToLeaderboard()">
+					Leaderboard
+				</a>
+				<a href="#" onclick="goToModules()">
+					Training Modules
+				</a>
+				<a href="#" onclick="goToAdminDashboard()">
+					Admin Dashboard
+				</a>
+			</div>
+		</div>
+		<div class="app-header-actions">
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
+		</div>
+		<div class="app-header-mobile">
+			<button class="icon-button large">
+				<i class="ph-list"></i>
+			</button>
+		</div>
+
+	</header>
+    <div class="app-body">
+        <div></div>
+        <div>
+            <h1>Oh No!</h1>
+            <h3>We sent you a simulated phishing email to test your skills, and you clicked a link in it.</h3>
+            <p>If this had been a real phishing email, an attacker likely would have gotten access to some of your data or money. Remember to read emails carefully, and never click on links if you see anything suspicious at all.</p>
+            <p>Need a refresher on what to look for? Check out our fishing training <a href="{% url 'trainingModules:trainingModules' %}">here</a></p>
+        </div>
+        <div></div>
+    </div>
+</div>
+</body>
+</html>
+
+
+<script>
+    function goToAchievements() {
+        try {
+            window.location.href = "{% url 'dashboard:goToAchievements' %}";
+        } catch (error) {
+            console.error('Error navigating to achievements:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToLeaderboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToLeaderboard' %}";
+        } catch (error) {
+            console.error('Error navigating to leaderboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToModules() {
+        try {
+            window.location.href = "{% url 'dashboard:goToModules' %}";
+        } catch (error) {
+            console.error('Error navigating to modules:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function goToAdminDashboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToAdminDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to admin dashboard:', error);
+            alert('You do not have permission to access the admin dashboard.');
+        }
+    }
+    function goToDashboard() {
+        try {
+            window.location.href = "{% url 'dashboard:goToDashboard' %}";
+        } catch (error) {
+            console.error('Error navigating to dashboard:', error);
+            alert('An error occurred. Please try again.');
+        }
+    }
+    function logout() {
+        try {
+            window.location.href = "{% url 'login:logout' %}";
+        } catch (error) {
+            console.error('Error logging out:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    }
+</script>
