@@ -1227,3 +1227,32 @@ input[type=number] {
     font-size: 14px;
     opacity: 0.9;
 }
+
+#employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1E1E1E;
+    color: #EAEAEA;
+}
+
+#employee-table th {
+    background-color: #2A2A2A;
+    color: #4DA3FF;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #444;
+}
+
+#employee-table td {
+    padding: 12px;
+    border-bottom: 1px solid #333;
+}
+
+#employee-table tr:nth-child(even) {
+    background-color: #252525;
+}
+
+#employee-table tr:hover {
+    background-color: #333333;
+}

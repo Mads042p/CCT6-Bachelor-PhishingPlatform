@@ -7,12 +7,28 @@
 	<title>Admin Dashboard</title>
 	<link rel="stylesheet" href="{% static 'base.css' %}">
 		<style>
-		.user-profile {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-		}
-	</style>
+			.user-profile {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+		
+			.send-email-button {
+				padding: 0.4em 1em;
+				border-radius: 6px;
+				border: 1px solid var(--c-gray-500);
+				background: transparent;
+				color: var(--c-text-secondary);
+				cursor: pointer;
+				transition: 0.25s ease;
+			}
+		
+			.send-email-button:hover,
+			.send-email-button:focus {
+				background-color: var(--c-gray-600);
+				color: var(--c-text-primary);
+			}
+		</style>
 </head>
 <body>
 <div class="app">
@@ -63,17 +79,34 @@
         <div></div>
         <div>
             <h1>Employees in {{ company }}</h1>
-    		<ul id="employee-list">
-        		{% for employee in employees %}
-            		<li class="employee">
-                		<strong>{{ employee.name }}</strong><br>
-                		<span><i>{{ employee.email }}</i></span>
-            		</li>
-        		{% empty %}
-            		<li>No employees found.</li>
-        		{% endfor %}
-    		</ul>
-			<button type="button" onclick="window.location.href='{% url 'adminDashboard:sendEmail' %}'">SendEmail</button>
+			<table id="employee-table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Phishing Quiz</th>
+						<th>Email Training</th>
+					</tr>
+				</thead>
+			
+				<tbody>
+					{% for employee in employees %}
+					<tr>
+						<td>{{ employee.name }}</td>
+						<td>{{ employee.email }}</td>
+						<td>{{ employee.module1score }}</td>
+						<td>{{ employee.module2score }}</td>
+					</tr>
+					{% empty %}
+					<tr>
+						<td colspan="4">No employees found.</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<br>
+			<p>Send simulated phishing email to employees by clicking the button below:</p>
+			<button class="send-email-button" type="button" onclick="window.location.href='{% url 'adminDashboard:sendEmail' %}'">Send Email</button>
         </div>
         <div></div>
     </div>

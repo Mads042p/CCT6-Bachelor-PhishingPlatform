@@ -102,15 +102,34 @@ def getUserAchievements(UserID):
 def getEmployees(company):
     conn = sqlite3.connect("db.db", check_same_thread=False)
     cursor = conn.cursor()    
-    query = f"""SELECT ID, Name, Email
-                FROM UserData
-                WHERE Company = ?"""
+    query = f"""SELECT
+                    UD.ID,
+                    UD.Name,
+                    UD.Email,
+
+                    COALESCE(MAX(CASE
+                        WHEN UP.SourceID = 'Module1' THEN UP.Score
+                    END), 0) AS Module1Score,
+
+                    COALESCE(MAX(CASE
+                        WHEN UP.SourceID = 'Module2' THEN UP.Score
+                    END), 0) AS Module2Score
+
+                FROM UserData UD
+                LEFT JOIN UserPoints UP
+                    ON UD.ID = UP.UserID
+
+                WHERE UD.Company = ?
+
+                GROUP BY UD.ID, UD.Name, UD.Email;"""
     cursor.execute(query, (company,))
     conn.commit()
     result = cursor.fetchall()
     conn.close()
 
     return result
+
+
 
 # Fetches all questions for a given quizID from the db. 
 def getQuiz(quizID):

@@ -32,7 +32,9 @@ def adminDashboard(request):
                 employee = {
                     "id": row[0],
                     "name": row[1],
-                    "email": row[2]
+                    "email": row[2],
+                    "module1score": row[3],
+                    "module2score": row[4]
                 }
                 employees.append(employee)
                 
