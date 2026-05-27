@@ -1,0 +1,196 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Training Modules</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+	<style>
+		.user-profile {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	</style>
+</head>
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="#" onclick="goToAchievements()">
+					Achievements
+				</a>
+				<a href="#" onclick="goToLeaderboard()">
+					Leaderboard
+				</a>
+				<a href="#" onclick="goToModules()">
+					Training Modules
+				</a>
+				<a href="#" onclick="goToAdminDashboard()">
+					Admin Dashboard
+				</a>
+			</div>
+		</div>
+		<div class="app-header-actions">
+			<div class="user-profile">
+				<span onclick="goToDashboard()">{{ username }}</span>
+				<button class="logout-button" onclick="logout()">Log out</button>
+			</div>
+		</div>
+		<div class="app-header-mobile">
+			<button class="icon-button large">
+				<i class="ph-list"></i>
+			</button>
+		</div>
+
+	</header>
+
+	<section class="phish-demo">
+		<h2>Try a Phishing Simulation</h2>
+		<p>Can you spot the phishing attempt? Click the email below.</p>
+
+		<div class="email-card" id="emailCard">
+			<div class="email-header">
+				<strong id="senderName"></strong>
+				<span id="senderEmail"></span>
+			</div>
+
+			<div class="email-body", id="emailBody"></div>
+			<p class="email-footer", id="emailFooter"></p>
+		</div>
+		<div class="phish-result-wrong hidden" id="phishResultWrong"></div>
+		<div class="phish-result-correct hidden" id="phishResultCorrect"></div>
+		<button class="is-phish-button" onclick="evaluateAnswer(event, 'phishing')", id="is-phish-button" >Phishing</button>
+		<button class="is-not-phish-button" onclick="evaluateAnswer(event, 'legitimate')" id="is-not-phish-button">Legitimate</button>
+		
+	</section>
+
+</div>
+{{ emails|json_script:"email-data" }}
+</body>
+</html>
+
+
+<script>
+	const emails = JSON.parse(document.getElementById("email-data").textContent);
+
+	let currentMail = 0;
+	let score = 0;
+
+	function showMail() {
+		document.getElementById("senderName").textContent = emails[currentMail].senderName;
+		document.getElementById("senderEmail").textContent = "<" + emails[currentMail].senderEmail + ">";
+		emailBody.innerHTML = emails[currentMail].body;
+		document.getElementById("emailFooter").textContent = emails[currentMail].footer;
+		phishResultCorrect.innerHTML = emails[currentMail].CorrectExplanation;
+		phishResultWrong.innerHTML = emails[currentMail].WrongExplanation;
+		}
+
+	function handlePhishClick(event) {
+		event.preventDefault();
+		alert("This was a phishing simulation! Never click suspicious links.");
+	}
+
+	
+	function correctAnswer(event) {
+		event.preventDefault();
+
+		document.getElementById("emailCard").style.display = "none";
+		document.getElementById("phishResultCorrect").classList.remove("hidden");
+		document.getElementById("phishResultWrong").classList.add("hidden");
+	}
+
+	function wrongAnswer(event) {
+		event.preventDefault();
+
+		document.getElementById("emailCard").style.display = "none";
+		document.getElementById("phishResultWrong").classList.remove("hidden");
+		document.getElementById("phishResultCorrect").classList.add("hidden");
+	}
+
+	function evaluateAnswer(event, answer) {
+		event.preventDefault();
+		document.getElementById("is-phish-button").disabled = true;
+		document.getElementById("is-not-phish-button").disabled = true;
+		
+		if (answer == emails[currentMail].status) {
+			score++;
+			correctAnswer(event);
+		}
+		else {
+			wrongAnswer(event);
+		}
+	}
+
+	function nextMail() {
+		document.getElementById("emailCard").style.display = "block";
+		document.getElementById("phishResultWrong").classList.add("hidden");
+		document.getElementById("phishResultCorrect").classList.add("hidden");
+		document.getElementById("is-phish-button").disabled = false;
+		document.getElementById("is-not-phish-button").disabled = false;
+
+		currentMail++
+		if (currentMail < emails.length) {
+			showMail()
+		}else {
+			document.querySelector(".phish-demo").innerHTML = `
+				<h2>Great job!</h2>
+				<p>You have completed the phishing simulation. Keep practicing to stay vigilant against real threats.</p>
+				<p>Your score: ${score}/${emails.length}</p>
+				<button class="logout-button" onclick="goToModules()">Back to Modules</button>
+			`;
+			fetch("{% url 'trainingModules:updateUserScore' %}", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": "{{ csrf_token }}"
+			},
+			body: JSON.stringify({
+				quizID: "Module2",
+				score: score,
+				total: emails.length
+			})
+		});
+		}
+
+	}
+
+	// Starts here
+	showMail();
+</script>
+
+<script>
+    function goToAchievements() {
+        window.location.href = "{% url 'trainingModules:goToAchievements' %}";
+    }
+	function goToLeaderboard() {
+		window.location.href = "{% url 'trainingModules:goToLeaderboard' %}";
+	}
+	function goToModules() {
+		window.location.href = "{% url 'trainingModules:goToModules' %}";
+	}
+	function goToAdminDashboard() {
+		window.location.href = "{% url 'trainingModules:goToAdminDashboard' %}";
+	}
+	function goToDashboard() {
+		window.location.href = "{% url 'trainingModules:goToDashboard' %}";
+	}
+	function logout() {
+		window.location.href = "{% url 'login:logout' %}";
+	}
+</script>

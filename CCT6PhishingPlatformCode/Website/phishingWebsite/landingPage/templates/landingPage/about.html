@@ -1,0 +1,110 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PhishMe Platform</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+
+	<style>
+		.hero {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			padding: 6rem 2rem;
+		}
+
+		.hero h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.hero p {
+			color: var(--c-text-tertiary);
+			max-width: 600px;
+			margin-bottom: 2rem;
+		}
+
+		.cta-buttons {
+			display: flex;
+			gap: 1rem;
+		}
+
+		.cta-buttons a {
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			text-decoration: none;
+			font-weight: 500;
+		}
+
+		.primary-btn {
+			background-color: var(--c-green-500);
+			color: var(--c-gray-900);
+		}
+
+		.secondary-btn {
+			border: 1px solid var(--c-gray-500);
+			color: var(--c-text-primary);
+		}
+
+		.footer-landing {
+			text-align: center;
+			margin-top: 4rem;
+			padding-top: 2rem;
+			border-top: 1px solid var(--c-gray-600);
+			color: var(--c-text-tertiary);
+			font-size: 0.9rem;
+		}
+
+		@media (max-width: 900px) {
+			.features {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="/landingPage/">Home</a>
+				<a href="{% url 'landingPage:about' %}">About</a>
+				<a href="/trainingModules/">Training</a>
+				<a href="/login/">Login</a>
+			</div>
+		</div>
+	</header>
+
+	<section class="hero">
+		<h1>This is a bachelor project.</h1>
+		<p>
+			PhishMe Platform is a project developed for educational purposes as part of a bachelor's thesis.
+            It is designed to simulate phishing attacks and provide training modules to help users recognize and respond to phishing attempts effectively.
+            This platform is not affiliated with any real company and should be used solely for learning and awareness purposes.
+		</p>
+
+	<div class="footer-landing">
+		Project for educational purposes only. Not affiliated with any real company. 
+	</div>
+
+</div>
+</body>
+</html>

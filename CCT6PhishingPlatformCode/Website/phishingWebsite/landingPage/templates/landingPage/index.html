@@ -1,0 +1,229 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PhishMe Platform</title>
+	<link rel="stylesheet" href="{% static 'base.css' %}">
+
+	<style>
+		.hero {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			padding: 6rem 2rem;
+		}
+
+		.hero h1 {
+			font-size: 3rem;
+			margin-bottom: 1rem;
+		}
+
+		.hero p {
+			color: var(--c-text-tertiary);
+			max-width: 600px;
+			margin-bottom: 2rem;
+		}
+
+		.cta-buttons {
+			display: flex;
+			gap: 1rem;
+		}
+
+		.cta-buttons a {
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			text-decoration: none;
+			font-weight: 500;
+		}
+
+		.primary-btn {
+			background-color: var(--c-green-500);
+			color: var(--c-gray-900);
+		}
+
+		.secondary-btn {
+			border: 1px solid var(--c-gray-500);
+			color: var(--c-text-primary);
+		}
+
+		.features {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2rem;
+			margin-top: 4rem;
+		}
+
+		.feature-card {
+			background-color: var(--c-gray-700);
+			padding: 2rem;
+			border-radius: 10px;
+			transition: 0.3s;
+		}
+
+		.feature-card:hover {
+			transform: translateY(-10px);
+		}
+
+		.feature-card h3 {
+			margin-bottom: 1rem;
+		}
+
+		.feature-card p {
+			color: var(--c-text-tertiary);
+		}
+
+		.footer-landing {
+			text-align: center;
+			margin-top: 4rem;
+			padding-top: 2rem;
+			border-top: 1px solid var(--c-gray-600);
+			color: var(--c-text-tertiary);
+			font-size: 0.9rem;
+		}
+
+		.newsletter {
+			text-align: center;
+			margin-top: 4rem;
+			padding: 2rem;
+			background-color: var(--c-gray-700);
+			border-radius: 10px;
+		}
+
+		.newsletter h2 {
+			margin-bottom: 1rem;
+		}
+
+		.newsletter p {
+			color: var(--c-text-tertiary);
+			margin-bottom: 2rem;
+		}
+
+		.newsletter form {
+			display: flex;
+			justify-content: center;
+			gap: 1rem;
+			flex-wrap: wrap;
+		}
+
+		.newsletter input {
+			padding: 0.75rem;
+			border: 1px solid var(--c-gray-500);
+			border-radius: 6px;
+			background-color: var(--c-gray-800);
+			color: var(--c-text-primary);
+			flex: 1;
+			min-width: 200px;
+		}
+
+		.newsletter button {
+			padding: 0.75rem 1.5rem;
+			border-radius: 6px;
+			background-color: var(--c-green-500);
+			color: var(--c-gray-900);
+			border: none;
+			font-weight: 500;
+			cursor: pointer;
+		}
+
+		@media (max-width: 600px) {
+			.newsletter form {
+				flex-direction: column;
+				align-items: center;
+			}
+		}
+
+		@media (max-width: 900px) {
+			.features {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+<div class="app">
+	<header class="app-header">
+		<div class="app-header-logo">
+			<a href="/">
+				<div class="logo">
+					<span class="logo-icon">
+						<img src="https://assets.codepen.io/285131/almeria-logo.svg" />
+					</span>
+					<h1 class="logo-title">
+						<span>PhishMe</span>
+						<span>Platform</span>
+					</h1>
+				</div>
+			</a>
+		</div>
+
+		<div class="app-header-navigation">
+			<div class="tabs">
+				<a href="/landingPage/">Home</a>
+				<a href="{% url 'landingPage:about' %}">About</a>
+				<a href="/trainingModules/">Training</a>
+				<a href="/login/">Login</a>
+			</div>
+		</div>
+	</header>
+
+	<section class="hero">
+		<h1>Train Humans to Spot Phishing</h1>
+		<p>
+			PhishMe helps organizations simulate phishing attacks, train employees,
+			and build a strong human firewall against cyber threats.
+		</p>
+
+		<div class="cta-buttons">
+			<a href="/signup" class="primary-btn">Get Started</a>
+			<a href="/login" class="secondary-btn">Login</a>
+		</div>
+	</section>
+
+	<section class="features">
+		<div class="feature-card">
+			<h3> Phishing Simulations</h3>
+			<p>
+				Run realistic phishing campaigns and track who clicks, reports,
+				or falls for attacks.
+			</p>
+		</div>
+
+		<div class="feature-card">
+			<h3> Training Modules</h3>
+			<p>
+				Interactive learning experiences to teach users how to identify
+				and avoid phishing threats.
+			</p>
+		</div>
+
+		<div class="feature-card">
+			<h3> Leaderboard & Achievements</h3>
+			<p>
+				Gamify security awareness with points, badges, and competition
+				across your organization.
+			</p>
+		</div>
+	</section>
+
+	<section class="newsletter">
+		<h2>Try getting phished!</h2>
+		<p>Subscribe to our phishing-letter to get occasional phishing simulations.</p>
+		<form action="{% url 'landingPage:newsletter' %}" method="post">
+			{% csrf_token %}
+			<input type="email" name="email" placeholder="Enter your email address" required>
+			<button type="submit">Subscribe</button>
+		</form>
+		<br>
+	</section>
+
+	<div class="footer-landing">
+		Project for educational purposes only. Not affiliated with any real company. 
+	</div>
+
+</div>
+</body>
+</html>

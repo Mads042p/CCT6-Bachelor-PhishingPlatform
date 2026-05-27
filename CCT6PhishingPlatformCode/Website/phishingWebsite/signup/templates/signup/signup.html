@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup page</title>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>Welcome to PhishMe</h1>
+                <p>Sign up for an account</p>
+            </div>
+
+            <form id="signupForm">
+                {% csrf_token %}
+                
+                <div class="form-group" id="errorContainer" style="color: red; margin-bottom: 1rem; display: none;">
+                    <p id="errorMessage"></p>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="name" name="name" placeholder="Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="company" name="company" placeholder="Company code (optional)">
+                </div>
+
+
+                <button type="button" class="login-button" onclick="createUser()"><em>Sign up</em></button>
+                <br>
+                <!-- Skift /signup til det rigtige link -->
+                <br>
+                    <a href="{% url 'signup:companyCreation' %}"><em>Don't have a company account? Sign up here.</em></a>
+                
+
+                
+
+
+            </form>
+        </div>    
+    </div>
+</body>
+
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script>
+
+        function sanitize(string) {
+            /*
+            Sanitizes the input for javaScript
+            */
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#x27;',
+                "/": '&#x2F;',
+            };
+            const reg = /[&<>"'/]/ig;
+            return string.replace(reg, (match)=>(map[match]));
+          }
+
+async function createUser() {
+            // Get the values, entered by the user. 
+            
+            try {
+                const email = sanitize(document.getElementById('email').value);
+                const password = sanitize(document.getElementById('password').value);
+                const name = sanitize(document.getElementById('name').value);
+                const company = sanitize(document.getElementById('company').value);
+                
+                const errorContainer = document.getElementById('errorContainer');
+                const errorMessage = document.getElementById('errorMessage');
+
+                if (!email || !password || !name) {
+                    errorMessage.textContent = "All fields are required.";
+                    errorContainer.style.display = 'block';
+                    return;
+                }
+                
+                errorContainer.style.display = 'none';
+            
+                // Hash the email and password, using SHA512. This is compared to the already stored version of the hashed password, 
+                // which was appended when the user created the account, in the backend.
+                const hashedPassword = CryptoJS.SHA512(password).toString();
+
+                //Send the data to the backend to be compared
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('password', hashedPassword);
+                formData.append('name', name);
+                formData.append('company', company);
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                try {
+                    const response = await fetch("{% url 'signup:goToDashboard' %}", {
+                        method: "POST",
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: formData
+                    });
+                    
+                    if (response.redirected) {
+                        // Follow the backend redirect target (e.g. dashboard)
+                        window.location.href = response.url;
+                    } else if (!response.ok) {
+                        // Handle errors (e.g., invalid 2FA code)
+                        const text = await response.text();
+                        errorMessage.textContent = text || "Error creating account. Please try again.";
+                        errorContainer.style.display = 'block';
+                    }
+                } catch (fetchError) {
+                    console.error('Fetch error:', fetchError);
+                    errorMessage.textContent = 'Network error. Please check your connection and try again.';
+                    errorContainer.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('errorMessage').textContent = "An unexpected error occurred. Please try again.";
+                document.getElementById('errorContainer').style.display = 'block';
+            }
+        }
+
+</script>
